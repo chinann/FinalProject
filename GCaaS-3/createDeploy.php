@@ -213,17 +213,17 @@ if (!$_SESSION["username"]) {
                                                         <option>Please select type of deployment...</option>
                                                         <?php
                                                         require('connectDB.php');
-                                                                
+
                                                             if (! $_SESSION['connection']) {
                                                                 echo "Connection Failed.";
                                                                 exit;
                                                             }
 
-                                                        $connect = pg_connect("host=localhost port=5432 dbname=GCaaS user=postgres password=1234");
+                                                        $connect = pg_connect("host=172.20.10.2 port=5432 dbname=GCaaS user=postgres password=1234");
                                                         if (!$connect) {
                                                             print("Connection Failed.");
                                                             exit;
-                                                        } 
+                                                        }
                                                         else {
                                                             $myresult = pg_exec($connect, "SELECT \"type_Name\" FROM \"table_type\"");
                                                             $rows = pg_numrows($myresult);

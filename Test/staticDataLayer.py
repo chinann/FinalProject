@@ -15,13 +15,12 @@
 
 import types
 import cgi
-import cgitb
-cgitb.enable()
+import cgitb; cgitb.enable()
 import csv
 import psycopg2
 import os, sys
 import uuid
-from collections import deque
+#from collections import deque
 from checkStaticData import CheckStaticData
 try:
   import simplejson as json
@@ -29,7 +28,7 @@ except:
   import json
 form = cgi.FieldStorage()
 
-class StaticDataLayer2:
+class StaticDataLayer:
 
     @staticmethod
     def setTypeData(typeData):
@@ -50,25 +49,27 @@ class StaticDataLayer2:
         if type(typeInput) == types.DictType and typeData == 'point':
             print 'test'
             inputDataLayer = typeInput
-            dictData = testSentData.checkOnePoint(geomArea,inputDataLayer)
+            dictData = testSentData.checkOnePoint(geomArea,inputDataLayer,cur)
 
         ## add point from web
         elif type(typeInput) != types.DictType and typeData == 'point':
             pathFile = typeInput
-            arrayData = CheckStaticData.checkPoint(geomArea,pathFile)
-            print arrayData
-##            for i in arrayData:
-##                print json.dumps(i)
-##
-##        elif type(typeInput) == types.DictType and typeData == 'line':
-##             print 'test'
-##             inputDataLayer = typeInput
-####            dictData = testSentData.checkOneLine(geomArea,inputDataLayer)
-##
-##        elif type(typeInput) != types.DictType and typeData == 'line':
-##            pathFile = typeInput
-##            arrayData = CheckStaticData.checkLine(geomArea,pathFile)
+            arrayData = CheckStaticData.checkPoint(geomArea,pathFile,cur)
 ##            print arrayData
+            for i in arrayData:
+                print i
+##
+        elif type(typeInput) == types.DictType and typeData == 'line':
+             print 'test'
+             inputDataLayer = typeInput
+##            dictData = testSentData.checkOneLine(geomArea,inputDataLayer,cur)
+
+        elif type(typeInput) != types.DictType and typeData == 'line':
+            pathFile = typeInput
+            arrayData = CheckStaticData.checkLine(geomArea,pathFile,cur)
+##            print arrayData
+            for i in arrayData:
+                print i
 ##
 ##
 ##        elif type(typeInput) == types.DictType and typeData == 'polygon':
@@ -100,20 +101,20 @@ class StaticDataLayer2:
 ##    def printError():
 
 
-##dictData = {'display_name': 'combodia', 'longitude': '102.80014', 'name_area': 'combodia', 'latitude': '11.98101', 'geomPoint': "ST_GeomFromText('POINT(102.80014 11.98101)',4326)", 'id': '2'}
- ## get data from add point form
-    def main():
-        print "Content-type: text/html\n"
-        print "\n\n"
-    ##    for i in form.keys():
-    ##        if i == "pathFile":
-    ##            pathFile = form[i].value
-    ##        elif i == "inputType":
-    ##            inputType = form[i].value
-        ##pathFile = "C:/xampp/htdocs/GCaaS-3/file/LineForm.csv"
-        inputType = pathFile
-        print "Hello World"
-    StaticDataLayer2.checkStaticDataLayer('point',inputType)
+def main():
+    print "Content-type: text/html\n"
+    print "\n\n"
+    for i in form.keys():
+        if i == "pathFile":
+            pathFile = form[i].value
+        elif i == "inputType":
+            inputType = form[i].value
+    pathFile = "C:/xampp/htdocs/GCaaS-3/file/LineForm.csv"
+##    print inputType
+##    print pathFile
+##    pathFile = "../" + pathFile
+    StaticDataLayer.checkStaticDataLayer('line',pathFile)
 
-    if __name__ == '__main__':
-        main()
+if __name__ == '__main__':
+    main()
+

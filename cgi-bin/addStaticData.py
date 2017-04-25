@@ -24,7 +24,7 @@ class AddStaticData:
 ##
 ##        global cur
 ##        global conn
-##        conn = psycopg2.connect(database="GCaaS", user="postgres", password="1234", host="localhost", port="5432")
+##        conn = psycopg2.connect(database="GCaaS", user="postgres", password="1234", host="172.20.10.2", port="5432")
 ##        print "Opened database successfully"
 ##        cur = conn.cursor()
 ##

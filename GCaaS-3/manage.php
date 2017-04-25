@@ -1,4 +1,29 @@
 <?php
+  function chkBrowser($nameBroser){
+	   return preg_match("/".$nameBroser."/",$_SERVER['HTTP_USER_AGENT']);
+
+  }
+
+
+// if(chkBrowser("Windows NT")==1){
+//     header("Location: show.php?device=Windows NT");
+// }
+     if(chkBrowser("Android") == 1){
+      header("Location: manage-mobile.php");
+    } elseif(chkBrowser("Safari") == 1){
+      if(chkBrowser("Chrome") == 0){
+        header("Location: manage-mobile.php");
+      }
+      // else{
+      //   print "Request from Mac";
+      // }
+    }
+    elseif(chkBrowser("iPhone") == 1){
+        header("Location: manage-mobile.php");
+		//print "Request from Mobile";
+	}
+
+
 session_start();
 if(isset($_SESSION['current'])){
      $_SESSION['oldlink']=$_SESSION['current'];

@@ -11,7 +11,7 @@ import cgitb; cgitb.enable()
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 form = cgi.FieldStorage()
-conn = psycopg2.connect(database="GCaaS", user="postgres", password="1234", host="localhost", port="5432")
+conn = psycopg2.connect(database="GCaaS", user="postgres", password="1234", host="172.20.10.2", port="5432")
 conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
 cur = conn.cursor()
 

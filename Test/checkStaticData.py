@@ -8,48 +8,39 @@
 # Copyright:   (c) chinan 2017
 # Licence:     <your licence>
 #-------------------------------------------------------------------------------
-import cgi
-import cgitb; cgitb.enable()
+
 import csv
 import psycopg2
 import os, sys
 import uuid
 from collections import deque
-form = cgi.FieldStorage()
 
 class CheckStaticData:
-    global conn
-    conn = psycopg2.connect(database="GCaaS", user="postgres", password="1234", host="172.20.10.2", port="5432")
-    print "Opened database successfully"
-    global cur
-    cur = conn.cursor()
-    cur.execute('SELECT "deployment_Area" FROM public.table_deployment where "deploymentID" = 5;')
-    rows = cur.fetchone()
-    geomArea = rows[0]
+##
 ##    @staticmethod
 ##    def test():
 ##        global conn
-##        conn = psycopg2.connect(database="GCaaS", user="postgres", password="1234", host="172.20.10.2", port="5432")
+##        conn = psycopg2.connect(database="GCaaS", user="postgres", password="1234", host="localhost", port="5432")
 ##        print "Opened database successfully"
 ##        global cur
 ##        cur = conn.cursor()
 ##        cur.execute('SELECT "deployment_Area" FROM public.table_deployment where "deploymentID" = 5;')
 ##        rows = cur.fetchone()
 ##        geomArea = rows[0]
-##
-##    ## get data from add point form
-##    ##  for i in form.keys():
-##    ##    if i == "name_area":
-##    ##        name_area = form[i].value
-##    ##    elif i == "latitude":
-##    ##        latitude = form[i].value
-##    ##    elif i == "longitude":
-##    ##        longitude = form[i].value
-##    ##    elif i == "display_name":
-##    ##        display_name = form[i].value
-##
-##    ##     get statictype
-##    ##    value = form.getvalue('statictype')
+
+    ## get data from add point form
+    ##  for i in form.keys():
+    ##    if i == "name_area":
+    ##        name_area = form[i].value
+    ##    elif i == "latitude":
+    ##        latitude = form[i].value
+    ##    elif i == "longitude":
+    ##        longitude = form[i].value
+    ##    elif i == "display_name":
+    ##        display_name = form[i].value
+
+    ##     get statictype
+    ##    value = form.getvalue('statictype')
 ##
 ##        if value == 'point':
 ##            CheckStaticData.checkPoint(geomArea,pathFile)
@@ -81,26 +72,41 @@ class CheckStaticData:
             return lastrow
 
     @staticmethod
-    def checkPoint(geomArea,pathFile):
-        arrayData = []
+    def checkPoint(geomArea,pathFile,cur):
+        arrayDataTrue = []
+        arrayDataFalse = []
         dictData = {}
         with open(pathFile, 'rb') as csvfile:
             spamreader = csv.reader(csvfile, delimiter=' ', quotechar='|')
+
             for row in spamreader:
                 if row[0][:2] != 'ID':
                     x = row[0].split(",")
-                    dictData = {'id':x[0],'name_area':x[1], 'latitude':x[2] ,'longitude':x[3] ,'display_name':x[4]}
-                    checkReturn = CheckStaticData.checkOnePoint(geomArea,dictData)
+                    dictData = {'id':x[0],'name_area':x[1], 'latitude':x[2] ,'longitude':x[3] ,'display_name':x[4],'status': 'none'}
+                    checkReturn = CheckStaticData.checkOnePoint(geomArea,dictData,cur)
                     if checkReturn != 'FALSE':
                         geomPoint = checkReturn
                         dictData.update({'geomPoint':geomPoint})
-                        arrayData.append(dictData.copy())
+                        dictData.update({'status': 'true'})
+                        arrayDataTrue.append(dictData.copy())
+##                        print "arrayDataTrue: "
+##                        for i in arrayDataTrue:
+##                            print i + '\n'
+
+                    else:
+                        arrayDataFalse.append(dictData.copy())
+##                        print "arrayDataFalse: "
+##                        for i in arrayDataFalse:
+##                            print i + '\n'
 
 ##        print arrayData
-        return arrayData
+        if arrayDataFalse != []:
+            return arrayDataFalse
+        else:
+            return arrayDataTrue
 
     @staticmethod
-    def checkLine(geomArea,pathFile):
+    def checkLine(geomArea,pathFile,cur):
         lastrow = CheckStaticData.get_last_row(pathFile)
         arrayDataTrue = []
         arrayDataFalse = []
@@ -108,38 +114,34 @@ class CheckStaticData:
         numLatLong = 0
         geomLine = ""
         long_lat = []
-        i=0
+##        i=0
         with open(pathFile, 'rb') as csvfile:
             spamreader = csv.reader(csvfile, delimiter=' ', quotechar='|')
+
             for row in spamreader:
                 if row[0][:2] != 'ID':
                     x = row[0].split(",")
                     if count == 1:
                         checkLineID = x[0]
                         checkName = x[1]
-                        dictData = {'id':x[0],'name_area':x[1], 'display_name':x[4]}
+
                     if x[0] == checkLineID and x[1] == checkName:
+                        dictData = {'id':x[0],'name_area':x[1], 'display_name':x[4], 'status': 'none'}
                         lat = str(x[2])
                         longL = str(x[3])
                         long_lat.append([longL, lat])
                     else:
                         dictData.update({'long_lat': long_lat})
-                        checkReturn = CheckStaticData.checkOneLine(geomArea,dictData)
-                        print "checkReturn: "
-                        print checkReturn
+                        checkReturn = CheckStaticData.checkOneLine(geomArea,dictData,cur)
                         print ""
-                        if checkReturn != "FALSE":
+                        if checkReturn == "FALSE":
+                            dictData.update({'status': 'false'})
+                            arrayDataFalse.append(dictData.copy())
+                        else:
                             geomLine = checkReturn
                             dictData.update({'geomLine': geomLine})
                             dictData.update({'status': 'true'})
                             arrayDataTrue.append(dictData.copy())
-                            print "arrayDataTrue: "
-                            print arrayDataTrue
-                        else:
-                            dictData.update({'status': 'false'})
-                            arrayDataFalse.append(dictData.copy())
-                            print "arrayDataFalse: "
-                            print arrayDataFalse
 
                         long_lat= []
                         dictData = {}
@@ -150,7 +152,7 @@ class CheckStaticData:
 
                     if lastrow[3] == x[3]:
                         dictData.update({'long_lat': long_lat})
-                        checkReturn = CheckStaticData.checkOneLine(geomArea,dictData)
+                        checkReturn = CheckStaticData.checkOneLine(geomArea,dictData,cur)
                         if checkReturn != "FALSE":
                             geomLine = checkReturn
                             dictData.update({'geomLine': geomLine})
@@ -163,11 +165,7 @@ class CheckStaticData:
                     checkLineID = x[0]
                     checkName = x[1]
                     count = count + 1
-                    i = i+1
-        print "arrayDataTrue: "
-        print arrayDataTrue
-        print "arrayDataFalse: "
-        print arrayDataFalse
+
 
         if arrayDataFalse != []:
             return arrayDataFalse
@@ -175,9 +173,10 @@ class CheckStaticData:
             return arrayDataTrue
 
     @staticmethod
-    def checkPolygon(geomArea,pathFile):
+    def checkPolygon(geomArea,pathFile,cur):
+        arrayDataTrue = []
+        arrayDataFalse = []
         lastrow = CheckStaticData.get_last_row(pathFile)
-        arrayData = []
         count = 1
         numLatLong = 0
         i = 0
@@ -193,12 +192,22 @@ class CheckStaticData:
                         checkName = x[1]
 
                     if x[0] == checkPolygonID and x[1] == checkName:
-                        dictData = {'id':x[0],'name_area':x[1], 'display_name':x[4]}
+                        dictData = {'id':x[0],'name_area':x[1], 'display_name':x[4], 'status': 'none'}
                         lat = str(x[2])
                         longL = str(x[3])
                         long_lat.append([longL, lat])
                     else :
-                        CheckStaticData.checkOnePolygon(geomArea,x[1],long_lat,x[4])
+                        checkReturn = CheckStaticData.checkOnePolygon(geomArea,x[1],long_lat,x[4],cur)
+                        if checkReturn == "FALSE":
+                            dictData.update({'status': 'false'})
+                            arrayDataFalse.append(dictData.copy())
+                        else:
+                            geomPolygon = checkReturn
+                            dictData.update({'geomPolygon': geomPolygon})
+                            dictData.update({'status': 'true'})
+                            arrayDataTrue.append(dictData.copy())
+
+                        dictData = {}
                         long_lat= []
                         lat = str(x[2])
                         longL = str(x[3])
@@ -206,23 +215,29 @@ class CheckStaticData:
                         count = 0
 
                     if lastrow[3] == x[3] and count != 0:
-                        checkReturn=CheckStaticData.checkOnePolygon(geomArea,x[1],long_lat,x[4])
-                        if checkReturn != 'FALSE':
-                           geomPolygon = checkReturn
-                           dictData.update({'geomPolygon': geomPolygon})
-                           dictData.update({'long_lat': long_lat})
-                           arrayData.append(dictData.copy())
+                        dictData.update({'long_lat': long_lat})
+                        checkReturn=CheckStaticData.checkOnePolygon(geomArea,x[1],long_lat,x[4],cur)
+                        if checkReturn != "FALSE":
+                            geomPolygon = checkReturn
+                            dictData.update({'geomPolygon': geomPolygon})
+                            dictData.update({'status': 'true'})
+                            arrayDataTrue.append(dictData.copy())
+                        else:
+                            dictData.update({'status': 'false'})
+                            arrayDataFalse.append(dictData.copy())
 
                     checkLineID = x[0]
                     checkName = x[1]
                     count = count + 1
                     i = i+1
-        print arrayData
-        return arrayData
+        if arrayDataFalse != []:
+            return arrayDataFalse
+        else:
+            return arrayDataTrue
 
 
     @staticmethod
-    def checkOnePoint(geomArea,inputDataLayer):
+    def checkOnePoint(geomArea,inputDataLayer,cur):
         id_ = inputDataLayer['id']
         name_area = inputDataLayer['name_area']
         latitude = inputDataLayer['latitude']
@@ -237,14 +252,14 @@ class CheckStaticData:
         rows = cur.fetchone()
         geomArea2 = rows[0]
         if geomArea2 == True:
-            print "TRUE"
+##            print "TRUE"
             return geomPoint
         else:
-            print "FALSE"
+##            print "FALSE"
             return "FALSE"
 
     @staticmethod
-    def checkOneLine(geomArea,inputDataLayer):
+    def checkOneLine(geomArea,inputDataLayer,cur):
         id_ = inputDataLayer['id']
         name_area = inputDataLayer['name_area']
         long_lat = inputDataLayer['long_lat']
@@ -268,14 +283,12 @@ class CheckStaticData:
         rows = cur.fetchone()
         geomArea2 = rows[0]
         if geomArea2 == True:
-            print "TRUE1"
             return geomLine
         else:
-            print "FALSE"
             return "FALSE"
 
     @staticmethod
-    def checkOnePolygon(geomArea,inputDataLayer):
+    def checkOnePolygon(geomArea,inputDataLayer,cur):
         id_ = inputDataLayer['id']
         name_area = inputDataLayer['name_area']
         long_lat = inputDataLayer['long_lat']
@@ -300,11 +313,9 @@ class CheckStaticData:
         rows = cur.fetchone()
         geomArea2 = rows[0]
         if geomArea2 == True:
-            print "TRUE"
             return geomPolygon
 
         else:
-            print "FALSE"
             return "FALSE"
 
 

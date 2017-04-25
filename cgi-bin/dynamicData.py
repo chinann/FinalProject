@@ -37,7 +37,7 @@ def main():
         elif i == "dbName":
             dbName = "DB_" + form[i].value
 
-    conn = psycopg2.connect(database = dbName, user="postgres", password="1234", host="localhost", port="5432")
+    conn = psycopg2.connect(database = dbName, user="postgres", password="1234", host="172.20.10.2", port="5432")
     cur = conn.cursor()
 
 

@@ -43,7 +43,7 @@ if (isset($_POST['signin'])) {
         if (isset($_SESSION['username'])) {
             if (!strcmp($role, "Super Admin")) {
                 # code...
-
+                  
                 $locationManage = "Location: http://".$_SESSION['host']."/GCaaS-3/manage.php";
                 header($location);
             } else {

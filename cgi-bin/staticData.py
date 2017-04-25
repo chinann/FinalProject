@@ -12,7 +12,7 @@ import cgitb; cgitb.enable()
 from datetime import datetime
 
 form = cgi.FieldStorage()
-conn = psycopg2.connect(database="GCaaS", user="postgres", password="1234", host="localhost", port="5432")
+conn = psycopg2.connect(database="GCaaS", user="postgres", password="1234", host="172.20.10.2", port="5432")
 cur = conn.cursor()
 
 def main():
