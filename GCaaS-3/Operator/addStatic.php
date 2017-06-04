@@ -1,12 +1,14 @@
 <?php
-session_start();
-if(isset($_GET['depName']) /*you can validate the link here*/){
-    $_SESSION['depname'] = $_GET['depName'];
-}
-if (!$_SESSION["username"]) {
-    header("Location: http://".$_SESSION['host']."/GCaaS-3/index.php");
-    exit(0);
-}
+    session_start();
+    
+    if(isset($_GET['depName']) /*you can validate the link here*/){
+        $_SESSION['depname'] = $_GET['depName'];
+    }
+    if (!$_SESSION["username"]) {
+        header("Location: http://".$_SESSION['host']."/GCaaS-3/index.php");
+        exit(0);
+    }
+
 ?>
 
 <!DOCTYPE html>
@@ -31,6 +33,8 @@ if (!$_SESSION["username"]) {
     <link rel="stylesheet" href="../css/skin-blue.min.css">
 
     <script type="text/javascript" src="../js/markerclusterer.js"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <style>
         #map {
             width: 100%;
@@ -41,34 +45,34 @@ if (!$_SESSION["username"]) {
 </head>
 
 <body class="hold-transition skin-blue sidebar-mini">
-
-     <!-- Modal -->
-    <div class="modal fade" id="myModal" role="dialog">
-        <div class="modal-dialog">
+    <!-- Modal -->
+    <div class='modal fade' id='myModal' role='dialog'>
+        <div class='modal-dialog'>
 
         <!-- Modal content-->
-        <div class="modal-content">
-            <div class="modal-header" style="background-color: #1c2b4b; color: #FFFFFF;">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h2 class="modal-title" >Add new static data layer</h2>
+        <div class='modal-content'>
+            <div class='modal-header' style='background-color: #1c2b4b; color: #FFFFFF;'>
+                <button type='button' class='close' data-dismiss='modal'>&times;</button>
+                <h2 class='modal-title' >Add new static data layer</h2>
             </div>
-            <div class="modal-body" > <center>
-                <div class="body-modal">Static data layer name: <input id="staticName-input" type="text" placeholder="name..."> </div><br>
-                <div class="body-modal">
-                    <label class="radio-inline"><input type="radio" name="optradio" id="point"  checked >Point </label>
-                    <label class="radio-inline" >
-                    <input type="radio" name="optradio" id="line" >Line </label>
-                    <label class="radio-inline" >
-                    <input type="radio" name="optradio" id="polygon" >Polygon </label>
+            <div class='modal-body' > <center>
+                <div class='body-modal'>Static data layer name: <input id='staticName-input' type='text' placeholder='name...'> </div><br>
+                <div class='body-modal'>
+                    <label class='radio-inline'><input type='radio' name='typeStatic' id='point'  value='point' checked >Point </label>
+                    <label class='radio-inline' >
+                    <input type='radio' name='typeStatic' id='line' value='line' >Line </label>
+                    <label class='radio-inline' >
+                    <input type='radio' name='typeStatic' id='polygon' value='polygon' >Polygon </label>
                 </div> </center>
             </div>
-            <div class="modal-footer" style="background-color: #1c2b4b;">
-                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="getNameStatic()">OK</button>
+            <div class='modal-footer' style='background-color: #1c2b4b;'>
+                <button type='button' class='btn btn-default' data-dismiss='modal' onclick='CreateMap()'>OK</button>
             </div>
         </div>
 
         </div>
-    </div>
+    </div> 
+    
 
 
 <div class="navbar navbar-inverse navbar-fixed-top " id="menu">
@@ -191,9 +195,13 @@ if (!$_SESSION["username"]) {
         <div class="tab-pane active" id="control-sidebar-home-tab" >
             <h4><img src="../img/layer.png">Adding new static data layer:</h4>
             <input id="staticName" name="staticName" style="border-style: none; border-bottom: 1px solid #ccc; width:100%; padding-left:2em; background-color: #222d32;" readonly>
-            <div class="input-group" style="margin: 10px">
+            <!-- <div class="input-group" style="margin: 10px">
                 <button class="btn btn-warning btn-block" type="button" id="search-btn" onclick="drop()"><i class="fa fa-map-marker"></i> Add new point</button>
-            </div><!-- /input-group -->
+            </div> /input-group -->
+            <p> </p>
+            <label > Click Marker on map to add Data Layer </label>
+            <input type="button" class="btn-primary btn-block" value="Add data layer" style="margin-top: 5px;" onclick="addStaticData()">
+
 
             <div class="panel-group" id="panel-group">
                 <span id="mySpan"></span>
@@ -205,18 +213,22 @@ if (!$_SESSION["username"]) {
 
         <!-- Settings tab content -->
         <div class="tab-pane" id="control-sidebar-settings-tab">
-            <form method="post">
+
                 <div class="input-group">
                     <h4><img src="../img/layer.png">Adding new static data layer:</h4>
                     <input id="staticName2" name="staticName2" style="border-style: none; border-bottom: 1px solid #ccc; width:100%; padding-left:2em; background-color: #222d32;" readonly>
                     <div >
+                    <!-- teeedit -->
                         <label class="control-label">Upload CSV File</label>
-                        <div class="input-group">
-                            <input id="input-1a" type="file" class="file" data-show-preview="false">
-                        </div>
-                        <button class="btn btn-default" type="button" id="upload" style="margin: 10px 20px 0px 0px">
-                            upload
-                        </button>
+                        <form  method="post" enctype="multipart/form-data" id="dataCSV" >
+                            <div class="input-group">
+                                <input id="input-1a" type="file" class="file" data-show-preview="false" name="filUpload">
+                            </div>
+                            <button> submit </button>
+                        </form>
+
+                        
+            
                         <p>__________________________________</p>
                         <p> Please download Template for csv file <a href='PointForm.xlsx' target="_blank">Download</a></p>
 
@@ -224,7 +236,7 @@ if (!$_SESSION["username"]) {
                     </div>
                 </div><!-- /input-group -->
 
-            </form>
+  
         </div><!-- /.tab-pane -->
     </div>
 </aside><!-- /.control-sidebar -->
@@ -232,6 +244,46 @@ if (!$_SESSION["username"]) {
      immediately after the control sidebar -->
 <div class="control-sidebar-bg"></div>
 <!--</div>&lt;!&ndash; ./wrapper &ndash;&gt;-->
+
+
+
+
+<!-- The Modal display result after add data -->
+
+ <div class='modal fade' id='myModalDisplay' role='dialog'>
+        <div class='modal-dialog modal-sm'>
+            <div class='modal-header' style='background-color: #1c2b4b; color: #FFFFFF;'>
+                <span class="close">&times;</span>
+            </div>
+            <!-- Modal content-->
+            <div class='modal-content'>           
+                <div class='modal-body' >
+                    <p id="displayData" style="font-size:18px;"></p>
+                </div>  
+            </div>
+              <div class='modal-footer' style='background-color: #1c2b4b;'>
+                <button id="btnOK" type='button' class='btn btn-default' data-dismiss='modal' >OK</button>
+            </div>
+        </div>
+    </div> 
+
+    <div class='modal fade' id='myModalDisplayAddSuccess' role='dialog'>
+        <div class='modal-dialog modal-sm'>
+            <div class='modal-header' style='background-color: #1c2b4b; color: #FFFFFF;'>
+                <span class="close">&times;</span>
+            </div>
+            <!-- Modal content-->
+            <div class='modal-content'>           
+                <div class='modal-body' >
+                    <p id="displayData2" style="font-size:18px;"></p>
+                </div>  
+            </div>
+              <div class='modal-footer' style='background-color: #1c2b4b;'>
+                <button id="btnAddOK" type='button' class='btn btn-default' data-dismiss='modal' >OK</button>
+            </div>
+        </div>
+    </div> 
+
 
 <!-- REQUIRED JS SCRIPTS -->
 
@@ -258,51 +310,157 @@ if (!$_SESSION["username"]) {
     var nameArea;
     var num = 0;
     var contentString = "";
+    var newMarkers = []; 
+    var display_name_array = [];
+    var array = [];
+    var jsonObj ;
+    var myJsonString;
+    var jsonObjToAdd = "aaa";
+    var staticNameIP,typeStatic,typeStaticCheck;
 
+    // edit tee
 
     // Get the modal
     $(document).ready(function(){
         $("#myModal").modal();
-    });
 
-    function getNameStatic(){
-        var staticNameIP = document.getElementById("staticName-input").value;
+        $("form#dataCSV").submit( function(event){
+            event.preventDefault();
+            var formData = new FormData($(this)[0]);
+
+            $.ajax( {
+                url : "../../GCaaS-3/Python/saveCSVFile.php",
+                type : 'POST',
+                data: formData,
+                contentType: false,
+                cache : false,
+                processData : false,
+                success: function (data) {
+                    // console.log(data.replace('\t',''));
+                   
+                    verifyData(data.replace('\t',''),'CSVFile');
+                
+                }
+            });   
+        });
+
+});
+
+    // });
+
+    function verifyData(pathFile,inputType) {
+        staticNameIP = document.getElementById("staticName-input").value;
+        typeStatic = document.getElementsByName('typeStatic');
+        var depname = "<?php echo $_SESSION['depname'] ?>";
+        var checkData;
+        var saveError='';
+        var returnResult,obj;
+        
+        for (var i = 0 ; i < typeStatic.length; i++)   {
+            if (typeStatic[i].checked)  {
+                 typeStaticCheck =typeStatic[i].value;
+            }
+        }
+
+         // Get the modal
+        var modal = document.getElementById('myModalDisplay');
+
+        // Get the <span> element that closes the modal
+        var span = document.getElementsByClassName("close")[0];
+
+        // Get the button that opens the modal
+        var btn = document.getElementById("btnOK");
+     
+                 
+        // When the user clicks on <span> (x), close the modal
+        span.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+                
+		var xmlhttp;
+		if(window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
+			xmlhttp = new XMLHttpRequest();
+		}
+		else {// code for IE6, IE5
+			xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+		}
+
+		xmlhttp.onreadystatechange=function(){
+			// alert("Status Code: " . xmlhttp.status);
+			if (xmlhttp.readyState==4 && xmlhttp.status==200){//200=status ok!
+                // console.log(xmlhttp.responseText);
+                returnResult = xmlhttp.responseText;
+                console.log(returnResult);
+                obj = JSON.parse('{"listItem": ' + returnResult + '}');
+                for(var i = 0;i<obj.listItem.length;i++){
+                    console.log(obj.listItem[i]);
+                    if(obj.listItem[i].status === 'true'){
+                       checkData = 'true';
+                    } 
+                    else{
+                        chechData = 'false';
+                        saveError = saveError + '<br>     ID: ' + obj.listItem[i].id + '     Display Name: ' + obj.listItem[i].display_name  ;
+                    }   
+                }
+                if(checkData === 'true'){
+                   
+                       // When the user clicks the button, open the modal 
+                   $("#myModalDisplay").modal();
+                   document.getElementById('displayData').innerHTML = "Check Success! \nClick 'OK' to Add Static Data Layer";
+                                     
+                    // When the user clicks the button, open the modal 
+                    btn.onclick = function() {
+                        jsonObjToAdd = '{"listItem": ' + returnResult + '}';
+                        addStaticData();
+                    }
+                } 
+                else{    
+                    $("#myModalDisplay").modal();   
+                    document.getElementById('displayData').innerHTML = "Check Failed!!!!! <br>" + 'ID Error is:' + saveError;
+                }
+			}
+		}
+			xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/GCaaS-3/Python/checkStaticDataLayer.py?pathFile="+pathFile+"&inputType="+inputType+"&statictype="+typeStaticCheck + "&depname=" + depname + "&staticName=" + staticNameIP,true);
+			xmlhttp.send();
+	}
+
+ 
+    function addStaticData(){
+        var btn = document.getElementById("btnAddOK");
+        var modal = document.getElementById('myModalDisplayAddSuccess');
+        
+       
+        console.log(jsonObjToAdd);
+           $.ajax( {
+                url : "../../GCaaS-3/Python/addStaticDataLayer.py",
+                type : 'POST',
+                data: {  dataDic : jsonObjToAdd },
+                success: function (data) {      
+                // When the user clicks the button, open the modal 
+                    $("#myModalDisplayAddSuccess").modal();
+                    document.getElementById('displayData2').innerHTML = "Add Static Data Layer Success!";
+                }
+            });  
+    }
+
+    function CreateMap() {
+        staticNameIP = document.getElementById("staticName-input").value;
+        typeStatic = document.getElementsByName('typeStatic');
+        for (var i = 0 ; i < typeStatic.length; i++)    {
+            if (typeStatic[i].checked)  {
+                 typeStaticCheck =typeStatic[i].value;
+            }
+        }
+        
         document.getElementById("staticName").value = staticNameIP;
         document.getElementById("staticName2").value = staticNameIP;
-
-    }
-
-    function getStaticType(){
-         if (window.XMLHttpRequest)
-          {// code for IE7+, Firefox, Chrome, Opera, Safari
-              xmlhttp=new XMLHttpRequest();
-          }
-          else
-          {// code for IE6, IE5
-              xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-          }
-          xmlhttp.onreadystatechange=function()
-          {
-              if (xmlhttp.readyState==4 && xmlhttp.status==200 ) //200 OK do 4 stage
-              {
-                console.log(xmlhttp.responseText);
-                obj = JSON.parse(xmlhttp.responseText);
-                console.log(obj.status);
-
-                  if (obj.status == "ok") {
-                      alert("Successfully !");
-                  }
-                  else {
-                      alert("No!!!");
-                  }
-              }
-          }
-          xmlhttp.open("GET","../../cgi-bin/checkStaticData.py?statictype="+statictype,true);
-          xmlhttp.send();
-
-    }
-
-    function initMap() {
 
         centerArea = {lat: 13, lng: 100};
 
@@ -312,7 +470,47 @@ if (!$_SESSION["username"]) {
             maxZoom: 20
         });
 
-        var drawingManager = new google.maps.drawing.DrawingManager({
+        var drawingManagerPOINT = new google.maps.drawing.DrawingManager({
+            drawingControl: true,
+            drawingControlOptions: {
+                position: google.maps.ControlPosition.LEFT_TOP,
+                drawingModes: [
+                    google.maps.drawing.OverlayType.MARKER
+                ]
+            },
+            markerOptions: {
+                fillColor: 'blue',
+                fillOpacity: 0.1,
+                strokeWeight: 3,
+                strokeColor: 'blue',
+                draggable: true,
+                clickable: true,
+                editable: true,
+                zIndex: 1
+            }            
+        });
+
+        var drawingManagerLINE = new google.maps.drawing.DrawingManager({
+            drawingControl: true,
+            drawingControlOptions: {
+                position: google.maps.ControlPosition.LEFT_TOP,
+                drawingModes: [
+                    google.maps.drawing.OverlayType.POLYLINE
+                ]
+            },
+            polylineOptions: {
+                fillColor: 'black',
+                fillOpacity: 0.1,
+                strokeWeight: 3,
+                strokeColor: 'black',
+                clickable: true,
+                editable: true,
+                draggable: true,
+                zIndex: 1
+            }
+        });
+   
+        var drawingManagerPOLYGON = new google.maps.drawing.DrawingManager({
             drawingControl: true,
             drawingControlOptions: {
                 position: google.maps.ControlPosition.LEFT_TOP,
@@ -327,6 +525,7 @@ if (!$_SESSION["username"]) {
                 strokeWeight: 3,
                 strokeColor: 'black',
                 clickable: true,
+                 draggable: true,
                 editable: true,
                 zIndex: 1
             },
@@ -336,12 +535,101 @@ if (!$_SESSION["username"]) {
                 strokeWeight: 3,
                 strokeColor: 'blue',
                 clickable: true,
+                 draggable: true,
                 editable: true,
                 zIndex: 1
             }
         });
 
-        drawingManager.setMap(map);
+        if(typeStaticCheck == 'point'){
+             drawingManagerPOINT.setMap(map);
+        }
+        else if (typeStaticCheck == 'line'){
+            drawingManagerLINE.setMap(map);
+        }
+        else{
+            drawingManagerPOLYGON.setMap(map);
+        }
+        // ********************************** add marker *********************
+    var lat,lng,jsonStringGet,json_obj;
+ 
+    google.maps.event.addListener(drawingManagerPOINT, 'markercomplete', function(markerFromDraw) {
+        console.log(markerFromDraw);
+        var newMarker = markerFromDraw;
+        console.log(newMarker);
+        lat = newMarker.getPosition().lat();
+        lng = newMarker.getPosition().lng();
+        jsonStringGet = 'http://maps.googleapis.com/maps/api/geocode/json?latlng=' + lat + ','+ lng +'&sensor=true';
+        json_obj = JSON.parse(GetJson(jsonStringGet));
+            nameArea = json_obj.results[0].address_components[1].long_name; 
+        // newMarker.content = "marker #" + newMarkers.length;
+        var id_marker = newMarkers.length;
+        newMarker.id  = id_marker;
+        var contentString = '<b>marker #</b>' + id_marker + 
+                  '<br><b>Name area: </b>' + nameArea +
+                  '<br><b style=\"padding-top:2em;\">Latitude: </b>' + lat +
+                  '<br><b>Longitude: </b>' + lng +
+                  '<br><b>Display Name: </b>' + '<input class=\"form-control\" id=\"display_name' + id_marker +'\">' +
+                  '<input type=\"button\" class=\"btn-primary btn-block\" value=\"OK\" style=\"margin-top: 5px;\" onclick=\"showListStatic('+lat+','+lng+','+id_marker+')\">';
+
+        var infowindow = new google.maps.InfoWindow();
+
+        google.maps.event.addListener(newMarker, 'click', function() {
+
+        
+          if(display_name_array[newMarker.id] == null){
+             infowindow.setContent(contentString);
+          }
+          else{
+            console.log(markerDetail);
+            console.log(newMarker.id);
+            var markerDetail;
+             for(var i =0;i<array.length;i++){
+                if(newMarker.id == array[i].id){
+                     markerDetail = array[i];
+                     break;
+                }
+
+             }
+            
+             console.log(array);
+
+             var contentStringShowData = '<b>marker #</b>' + markerDetail.id + 
+                  '<br><b>Name area: </b>' + markerDetail.name_area +
+                  '<br><b style=\"padding-top:2em;\">Latitude: </b>' + markerDetail.latitude +
+                  '<br><b>Longitude: </b>' + markerDetail.longitude +
+                  '<br><b>Display Name: </b>' + '<input class=\"form-control\" id=\"display_name' + markerDetail.id + "\" value=\"" + markerDetail.display_name +'\">';
+              console.log(array);
+              infowindow.setContent(contentStringShowData);
+          }
+          infowindow.open(map, this);
+        });
+
+        google.maps.event.addListener(newMarker, 'dragend', function() {
+            // console.log(markerFromDraw);
+            newMarker = markerFromDraw;
+            lat = newMarker.getPosition().lat();
+            lng = newMarker.getPosition().lng();
+            jsonStringGet = 'http://maps.googleapis.com/maps/api/geocode/json?latlng=' + lat + ','+ lng +'&sensor=true';
+            json_obj = JSON.parse(GetJson(jsonStringGet));
+                nameArea = json_obj.results[0].address_components[1].long_name; 
+            // newMarker.content = "marker #" + newMarkers.length;
+            // var id_marker = newMarkers.length;
+            // newMarker.id  = id_marker;
+            var contentString = '<b>marker #</b>' + newMarker.id + 
+                    '<br><b>Name area: </b>' + nameArea +
+                    '<br><b style=\"padding-top:2em;\">Latitude: </b>' + lat +
+                    '<br><b>Longitude: </b>' + lng +
+                    '<br><b>Display Name: </b>' + '<input class=\"form-control\" id=\"display_name' + newMarker.id +'\">' +
+                    '<input type=\"button\" class=\"btn-primary btn-block\" value=\"OK\" style=\"margin-top: 5px;\" onclick=\"showListStatic('+lat+','+lng+','+newMarker.id+')\">';
+            
+            infowindow.setContent(contentString);
+            infowindow.open(map, this);
+        });
+
+        newMarkers.push(newMarker);
+    });
+    
 
         // Create the search box and link it to the UI element.
         var input = document.getElementById('pac-input');
@@ -352,7 +640,6 @@ if (!$_SESSION["username"]) {
         map.addListener('bounds_changed', function() {
           searchBox.setBounds(map.getBounds());
         });
-
 
         // Listen for the event fired when the user selects a prediction and retrieve
         // more details for that place.
@@ -399,6 +686,95 @@ if (!$_SESSION["username"]) {
         });
     }
 
+    
+
+    function showListStatic(lat,lng , idShowListStatic){
+
+        var display_name = document.getElementById('display_name' + idShowListStatic ).value;
+        var mySpan = document.getElementById('mySpan');
+        var addDict = {};
+        addDict['name_area'] = nameArea;
+        addDict['latitude'] = lat;
+        addDict['longitude'] = lng;
+        addDict['display_name'] = display_name;
+        addDict['status'] = "unverified";
+        addDict['id'] = idShowListStatic;
+        addDict['depname'] = "<?php echo $_SESSION['depname'] ?>";
+        addDict['staticName'] = staticNameIP;
+        
+        console.log(addDict);
+        var addDictString = JSON.stringify(addDict);
+        console.log(addDictString);
+        typeStatic = document.getElementsByName('typeStatic');
+        typeStaticCheck;
+        
+        for (var i = 0 ; i < typeStatic.length; i++)   {
+            if (typeStatic[i].checked)  {
+                 typeStaticCheck =typeStatic[i].value;
+            }
+        }
+        addDict['dataLayerType'] = typeStaticCheck;
+        var xmlhttp;
+		if(window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
+			xmlhttp = new XMLHttpRequest();
+		}
+		else {// code for IE6, IE5
+			xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+		}
+
+		xmlhttp.onreadystatechange=function(){
+			// alert("Status Code: " . xmlhttp.status);
+			if (xmlhttp.readyState==4 && xmlhttp.status==200){//200=status ok!
+                // console.log(xmlhttp.responseText);
+                returnResult = xmlhttp.responseText;
+                // console.log(typeof (returnResult));
+                returnResult = returnResult.trim();
+                // console.log(returnResult);
+                if (returnResult !== "FALSE"){
+                    addDict['status'] = "true";
+                    addDict['geom'] = returnResult;
+                    array.push(addDict);
+                    var bodyDiv = document.createElement('div');
+                    bodyDiv.id = 'listStaticDataLayer' + num;
+                    document.getElementById('panel-group').appendChild(bodyDiv);
+
+                    display_name_array[idShowListStatic] = document.getElementById('display_name' + idShowListStatic ).value;
+                    
+                    // document.getElementByTagName('body')[0].appendChild(bodyDiv);
+                    
+                    for(var i=0;i<array.length;i++){
+
+                        // document.getElementById('nameStatic' + num ).innerHTML = array[i].nameE;
+                    
+                        
+                        document.getElementById('listStaticDataLayer' + num).innerHTML = "Name: " + "<a href=\"javascript:google.maps.event.trigger(newMarkers[" + array[i]['id'] + "],'click');\">" +array[i].display_name + "</a>";
+
+                    }
+                    num++;
+
+                    
+                    
+                }
+                else{
+                    $("#myModalDisplay").modal();      
+                    document.getElementById('displayData').innerHTML = "Error! <br> Data is not in the coverage area"
+                }
+               
+                myJsonString = JSON.stringify(array);
+                console.log(myJsonString);
+                    // jsonObj  = JSON.parse(JSON.stringify(array));
+
+                jsonObjToAdd = '{"listItem": ' + myJsonString + '}';
+                console.log(jsonObjToAdd);
+			}
+		}
+
+		xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/GCaaS-3/Python/checkStaticDataLayer.py?inputType="+addDictString+"&statictype="+typeStaticCheck+"&depname=<?php echo $_SESSION['depname'] ?>",true);
+		xmlhttp.send();
+    
+
+    }
+
 
     function changeStatus(id) {
         var x = document.getElementById("status").selectedIndex;
@@ -423,7 +799,7 @@ if (!$_SESSION["username"]) {
 
             }
         }
-        xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/cgi-bin/status.py?status="+status+"&id="+id+"&dbName=<?php echo $_SESSION['depname'] ?>",true);
+        xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/GCaaS-3/Python/status.py?status="+status+"&id="+id+"&dbName=<?php echo $_SESSION['depname'] ?>",true);
         xmlhttp.send();
     }
 
@@ -431,121 +807,10 @@ if (!$_SESSION["username"]) {
         if (markAdd!=null) {
           clearMarkers();
         }
-
         addMarkerWithTimeout(map.getCenter(), 1 * 200);
     }
 
-    function addMarkerWithTimeout(position, timeout) {
-        window.setTimeout(function() {
-            infoWindow = new google.maps.InfoWindow();
-
-            markAdd = new google.maps.Marker({
-                position: position,
-                map: map,
-                draggable: true,
-                animation: google.maps.Animation.DROP,
-                number : 0 // edit by tee
-            });
-            markAdd.addListener("dblclick", function() {
-              markAdd.setMap(null);
-            });
-            //edit by tee
-            console.log(markAdd);
-            google.maps.event.addListener(markAdd, 'drag', function(event) {
-                lat = event.latLng.lat();
-                lng = event.latLng.lng();
-
-                var jsonStringGet = 'http://maps.googleapis.com/maps/api/geocode/json?latlng=' + lat + ','+ lng +'&sensor=true';
-                var json_obj = JSON.parse(GetJson(jsonStringGet));
-                nameArea = json_obj.results[0].address_components[1].long_name;
-
-                contentString = '<b>Location</b><br>' +
-                  '<br><b>Name area: </b>' + nameArea +
-                  '<br><b style="padding-top:2em;">Latitude: </b>' + lat +
-                  '<br><b>Longitude: </b>' + lng +
-                  '<br><b>Display Name: </b>' + '<input class="form-control" id="name" >' +
-                //   '<br><b>Message: </b>' + '<textarea class="form-control" id="msg" style="resize:none;"></textarea>' +
-                  '<input type="button" class="btn-primary btn-block" value="OK" style="margin-top: 5px;" onclick="showListStatic('+lat+','+lng+')">';
-                infoWindow.setContent(contentString);
-                infoWindow.open(map,markAdd);
-
-            });
-            google.maps.event.addListener(markAdd, 'click', function(event) {
-                lat = event.latLng.lat();
-                lng = event.latLng.lng();
-
-                var jsonStringGet = 'http://maps.googleapis.com/maps/api/geocode/json?latlng=' + lat + ','+ lng +'&sensor=true';
-                var json_obj = JSON.parse(GetJson(jsonStringGet));
-                nameArea = json_obj.results[0].address_components[1].long_name;
-
-
-                contentString = '<b>Location</b><br>' +
-                  '<br><b>Name area: </b>' +  nameArea +
-                  '<br><b style="padding-top:2em;">Latitude: </b>' + lat +
-                  '<br><b>Longitude: </b>' + lng +
-                  '<br><b>Display Name: </b>' + '<input class="form-control" id="name" >' +
-                //   '<br><b>Message: </b>' + '<textarea class="form-control" id="msg" style="resize:none;"></textarea>' +
-                  '<input type="button" class="btn-primary btn-block" value="OK" style="margin-top: 5px;" onclick="showListStatic('+lat+','+lng+')">';
-
-
-                infoWindow.setContent(contentString);
-                infoWindow.open(map,markAdd);
-
-            });
-
-
-
-        }, timeout);
-    }
-    var array = [];
-
-
-     function showListStatic(lat,lng){
-        var name = document.getElementById("name").value;
-        var mySpan = document.getElementById('mySpan');
-
-        array.push({nameE:name, latT:lat, lngG:lng});
-
-
-        var panel = document.createElement('div');
-        panel.className = 'panel panel-default';
-
-        document.getElementById('panel-group').appendChild(panel);
-
-        var heading = document.createElement('div');
-        heading.className = 'panel-heading';
-
-        var title = document.createElement('h4');
-        title.className = 'panel-title';
-        title.innerHTML = '<a data-toggle="collapse" data-parent="#accordion" href="#collapse1" id = "nameStatic' +num +'"><i class="fa fa-chevron-circle-down" aria-hidden="true"></i></a>';
-        heading.appendChild(title);
-
-        var collapse = document.createElement('div');
-        collapse.className = 'panel-collapse collapse';
-        collapse.id = 'collapse1';
-
-        var body = document.createElement('div');
-        collapse.className = 'panel-body';
-        collapse.id = 'listStaticDataLayer' + num;
-        collapse.appendChild(body);
-
-        panel.appendChild(heading);
-        panel.appendChild(collapse);
-
-        for(var i=0;i<array.length;i++){
-
-            document.getElementById('nameStatic' + num ).innerHTML = array[i].nameE;
-
-            document.getElementById('listStaticDataLayer' + num).innerHTML = "Name: " + array[i].nameE + "<br>" +
-            // "Message: " + array[i].msgG + "<br>" +
-            "Lat: " + array[i].latT + "<br>" +
-            "Long: " +  array[i].lngG + "<br>"  ;
-        }
-
-        num++;
-        // xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/cgi-bin/insertRequest.py?name="+name+"&msg="+msg+"&lat="+lat+"&lng="+lng+"&dbName=<?php echo $_SESSION['depname'] ?>",true);
-        // xmlhttp.send();
-    }
+   
 
     function GetJson(yourUrl){
         var Httpreq = new XMLHttpRequest(); // a new request
@@ -587,7 +852,7 @@ if (!$_SESSION["username"]) {
 
             }
         }
-        xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/cgi-bin/insertRequest.py?name="+name+"&msg="+msg+"&lat="+lat+"&lng="+lng+"&dbName=<?php echo $_SESSION['depname'] ?>",true);
+        xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/GCaaS-3/Python/insertRequest.py?name="+name+"&msg="+msg+"&lat="+lat+"&lng="+lng+"&dbName=<?php echo $_SESSION['depname'] ?>",true);
         xmlhttp.send();
     }
 
@@ -652,14 +917,14 @@ if (!$_SESSION["username"]) {
           }
         }
 
-        xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/cgi-bin/addHashTag.py?dbName=<?php echo $_SESSION['depname'] ?>&hashtag="+newhash,true);
+        xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/GCaaS-3/Python/addHashTag.py?dbName=<?php echo $_SESSION['depname'] ?>&hashtag="+newhash,true);
         xmlhttp.send();
     }
 
 </script>
 
 <script
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyChsKVqmyv9qxepQVE9qlnUj8sXbsuQrhs&libraries=places,drawing&callback=initMap"
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyChsKVqmyv9qxepQVE9qlnUj8sXbsuQrhs&libraries=places,drawing"
     async defer></script>
 </body>
 </html>

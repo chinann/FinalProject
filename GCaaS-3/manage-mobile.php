@@ -1,15 +1,15 @@
 <?php
-// session_start();
+session_start();
 // if(isset($_SESSION['current'])){
 //      $_SESSION['oldlink']=$_SESSION['current'];
 // }else{
 //      $_SESSION['oldlink']='no previous page';
 // }
 // $_SESSION['current']=$_SERVER['PHP_SELF'];
-// if (!$_SESSION["username"]) {
-//     header("Location: http://172.20.10.2/GCaaS-3/index.php");
-//     exit(0);
-// }
+if (!$_SESSION["username"]) {
+    header("Location: http://".$_SESSION['host']."/GCaaS-3/index.php");
+    exit(0);
+}
 ?>
 
 <!DOCTYPE html>
@@ -87,7 +87,7 @@
     <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav navbar-right">
         <li><?php
-            if ("n") {
+            if ($_SESSION["username"]) {
             ?>
             <!-- User Account Menu -->
         <li class="dropdown user user-menu">
@@ -95,7 +95,7 @@
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                 <button type="button" class="btn btn-default btn-lg" data-toggle="modal"
                         data-target="#modal-logout"
-                        style="font-size:14px;"> <?php echo "ton" ?> </button>
+                        style="font-size:14px;"> <?php echo $_SESSION["username"] ?> </button>
                 <br>
             </a>
         </li>
@@ -116,13 +116,13 @@
 </nav>
 
 <?php
-    $connection = pg_connect("host=172.20.10.2 port=5432 dbname=GCaaS user=postgres password=1234");
-    if (!$connection) {
-        echo "Connection Failed.";
-        exit;
-    }
+    require('connectDB.php');
+                    if (! $_SESSION['connection']) {
+                        echo "Connection Failed.";
+                        exit;
+                    }
     else {
-        $result_user = pg_exec($connection, "SELECT \"user_Fname\", \"user_Lname\", \"user_Email\", \"user_Tel\", \"user_Addr\" FROM table_user WHERE \"user_Username\" = 'ton'");
+        $result_user = pg_exec($_SESSION['connection'], "SELECT \"user_Fname\", \"user_Lname\", \"user_Email\", \"user_Tel\", \"user_Addr\" FROM table_user WHERE \"user_Username\" = '". $_SESSION["username"] ."'");
         $rows_user = pg_numrows($result_user);
         $column_user = pg_numfields($result_user);
         $user_Fname = "";
@@ -240,13 +240,13 @@
           }
 
 
-          $myresult = pg_exec($connection, "SELECT \"deployment_Name\" , \"roleUserID\" FROM table_worker INNER JOIN table_deployment ON table_worker.\"deploymentID\" = table_deployment.\"deploymentID\" WHERE table_worker.\"userID\" = 4" . $sql);
+          $myresult = pg_exec($_SESSION['connection'], "SELECT \"deployment_Name\" , \"roleUserID\" FROM table_worker INNER JOIN table_deployment ON table_worker.\"deploymentID\" = table_deployment.\"deploymentID\" WHERE table_worker.\"userID\" = " . $_SESSION["userID"] . $sql);
           $rows_count = pg_numrows($myresult);
           if ($rows_count != 0) {
               for ($i = 0; $i < $rows_count; $i++) {
                 $deploymentName = pg_result($myresult, $i, 0);
                 $roleUserID = pg_result($myresult, $i, 1);
-                $role = pg_exec($connection, "SELECT \"role_Name\"  FROM table_role  WHERE \"roleUserID\" = " . $roleUserID);
+                $role = pg_exec($_SESSION['connection'], "SELECT \"role_Name\"  FROM table_role  WHERE \"roleUserID\" = " . $roleUserID);
                 $roleName = pg_result($role, 0, 0);
                 ?> <div class="list-group-item">
                       <h4 class="list-group-item-heading" style="font-size: 20px;"> <?php echo $deploymentName; ?>
@@ -269,17 +269,7 @@
               }
           }
 
-          // for($i=1;$i<=3;$i++){
-            // echo'<div class="list-group-item">
-            //       <h4 class="list-group-item-heading" style="font-size: 17px;">Deployment '. $i .'
-            //         <button class="btn btn-danger pull-right" onclick="deleteRow()">
-            //           <i class="fa fa-trash-o" aria-hidden="true"></i>
-            //         </button>
-            //       </h4>
-            //       <p class="list-group-item-text">Role: '. $i .'</p>
-            //       <a class="list-group-item-text" style="font-size: 17px;">go to Deployment "'. $i .'"</a>
-            //     </div>';
-          // }
+          
         ?>
     </div>
     </div>

@@ -118,7 +118,7 @@ if (!$_SESSION["username"]) {
 <!--NAVBAR SECTION-->
 
 <?php
-    // $connection = pg_connect("host=172.16.150.177 port=5432 dbname=GCaaS user=postgres password=1234");
+    // $connection = pg_connect("host=localhost port=5432 dbname=GCaaS user=postgres password=1234");
     // if (!$connection) {
     //     echo "Connection Failed.";
     //     exit;
@@ -129,7 +129,7 @@ if (!$_SESSION["username"]) {
     	exit;
     }
     else {
-        $result_deployment = pg_exec($connection, "SELECT \"deployment_Name\", \"deployment_Description\", \"deployment_DateCreate\", \"deployment_LastAccess\", \"deployment_URL\", ST_AsText(\"deployment_Area\"), \"typeID\", ST_X(ST_AsText(ST_Centroid(\"deployment_Area\"))),ST_Y(ST_AsText(ST_Centroid(\"deployment_Area\"))) FROM table_deployment WHERE \"deployment_Name\" = '" .$_SESSION["depname"]."'");
+        $result_deployment = pg_exec($_SESSION['connection'], "SELECT \"deployment_Name\", \"deployment_Description\", \"deployment_DateCreate\", \"deployment_LastAccess\", \"deployment_URL\", ST_AsText(\"deployment_Area\"), \"typeID\", ST_X(ST_AsText(ST_Centroid(\"deployment_Area\"))),ST_Y(ST_AsText(ST_Centroid(\"deployment_Area\"))) FROM table_deployment WHERE \"deployment_Name\" = '" .$_SESSION["depname"]."'");
         $rows_deployment = pg_numrows($result_deployment);
         $column_deployment = pg_numfields($result_deployment);
         $deployment_Name = "";
@@ -171,7 +171,7 @@ if (!$_SESSION["username"]) {
 
                     else if ($j == 6) {
                         $typeID = pg_result($result_deployment, $i, $j);
-                        $x = pg_exec($connection, "SELECT \"type_Name\" FROM table_type  WHERE \"typeID\" = " . $typeID);
+                        $x = pg_exec($_SESSION['connection'], "SELECT \"type_Name\" FROM table_type  WHERE \"typeID\" = " . $typeID);
                         $xrow = pg_numrows($x);
                         for ($a = 0; $a < $xrow; $a++) {
                             $type_Name = pg_result($x, $a, 0);
@@ -391,18 +391,18 @@ if (!$_SESSION["username"]) {
                     <tbody>
 
                     <?php
-                    if (!$connection) {
+                    if (!$_SESSION['connection']) {
                         echo "Connection Failed.";
                         exit;
                     } else {
-                        $result_deploymentID = pg_exec($connection, "SELECT \"deploymentID\" FROM table_deployment  WHERE \"deployment_Name\" = '" .$_SESSION["depname"]."'");
+                        $result_deploymentID = pg_exec($_SESSION['connection'], "SELECT \"deploymentID\" FROM table_deployment  WHERE \"deployment_Name\" = '" .$_SESSION["depname"]."'");
                         $rows_deploy = pg_numrows($result_deploymentID);
                         $column_deploy = pg_numfields($result_deploymentID);
                         $deploymentID = "";
                         if($rows_deploy != 0) {
                             $deploymentID = pg_result($result_deploymentID,0,0);
                         }
-                        $result_userDeploy = pg_exec($connection, "SELECT * FROM table_worker WHERE \"deploymentID\" = '" . $deploymentID ."'");
+                        $result_userDeploy = pg_exec($_SESSION['connection'], "SELECT * FROM table_worker WHERE \"deploymentID\" = '" . $deploymentID ."'");
                         $rows_count = pg_numrows($result_userDeploy);
                         $column_count = pg_numfields($result_userDeploy);
                         $username = "";
@@ -413,7 +413,7 @@ if (!$_SESSION["username"]) {
                                 for ($j = 0; $j < $column_count; $j++) {
                                     if ($j == 0) {
                                         $userID = pg_result($result_userDeploy, $i, $j);
-                                        $x = pg_exec($connection, "SELECT \"user_Username\" FROM table_user  WHERE \"userID\" = " . $userID);
+                                        $x = pg_exec($_SESSION['connection'], "SELECT \"user_Username\" FROM table_user  WHERE \"userID\" = " . $userID);
                                         $xrow = pg_numrows($x);
                                         for ($a = 0; $a < $xrow; $a++) {
                                             $username = pg_result($x, $a, 0);
@@ -425,7 +425,7 @@ if (!$_SESSION["username"]) {
                                         <?php
                                     } else if ($j == 3) {
                                         $roleUserID = pg_result($result_userDeploy, $i, $j);
-                                        $y = pg_exec($connection, "SELECT \"role_Name\"  FROM table_role  WHERE \"roleUserID\" =" . $roleUserID);
+                                        $y = pg_exec($_SESSION['connection'], "SELECT \"role_Name\"  FROM table_role  WHERE \"roleUserID\" =" . $roleUserID);
                                         $yrow = pg_numrows($y);
                                         for ($b = 0; $b < $yrow; $b++) {
                                             $roleName = pg_result($y, $b, 0);
@@ -624,7 +624,7 @@ if (!$_SESSION["username"]) {
                                 }
                             }
                         }
-                        xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/cgi-bin/searchUser.py?user="+user,true);
+                        xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/GCaaS-3/Python/searchUser.py?user="+user,true);
                         xmlhttp.send();
                     }
                     else {
@@ -662,7 +662,7 @@ if (!$_SESSION["username"]) {
                                 document.getElementById("role").hidden = true;
                             }
                         }
-                        xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/cgi-bin/addUser.py?user="+username+"&role="+role+"&depname=<?php echo $_SESSION['depname']?>",true);
+                        xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/GCaaS-3/Python/addUser.py?user="+username+"&role="+role+"&depname=<?php echo $_SESSION['depname']?>",true);
                         xmlhttp.send();
                     }
                     else {
@@ -699,7 +699,7 @@ if (!$_SESSION["username"]) {
                                 location.reload();
                             }
                         }
-                        xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/cgi-bin/deleteRow.py?deployName=<?php echo $_SESSION['depname']?>&user=<?php echo $_SESSION['username'] ?>",true);
+                        xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/GCaaS-3/Python/deleteRow.py?deployName=<?php echo $_SESSION['depname']?>&user=<?php echo $_SESSION['username'] ?>",true);
                         xmlhttp.send();
                     }
                 }

@@ -266,11 +266,11 @@ function submit(username){
           document.getElementById('url').focus();
         }
         else{
-           location.replace("http://172.16.150.177/GCaaS-3/Admin/manageDeployment.php?depName="+deploymentName)
+           location.replace("http://localhost/GCaaS-3/Admin/manageDeployment.php?depName="+deploymentName)
         };
       }
   }
-  xmlhttp.open("GET","http://172.16.150.177/cgi-bin/create.py?deployName="+deploymentName+"&url="+url+"&typeDep="+type+"&description="+descrip+"&area="+polygon+"&TW="+twitter+"&User="+username,true);
+  xmlhttp.open("GET","http://localhost/GCaaS-3/Python/create.py?deployName="+deploymentName+"&url="+url+"&typeDep="+type+"&description="+descrip+"&area="+polygon+"&TW="+twitter+"&User="+username,true);
   xmlhttp.send();
 }
 

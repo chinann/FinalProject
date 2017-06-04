@@ -195,7 +195,7 @@ if (!$_SESSION["username"]) {
                                             <label for="url" class="col-sm-3 control-label">Deployment URL <r class="require">* </r>:</label>
                                             <div class="col-sm-7">
                                                 <div class="input-group">
-                                                    <span class="input-group-addon">https://10.200.8.85/GCaaS-3/</span>
+                                                    <span class="input-group-addon">https://<?php echo $_SESSION['host']; ?>/GCaaS-3/</span>
                                                     <input type="text" class="form-control" id="url" aria-describedby="basic-addon3" placeholder="Please input your url name of deployment here..." onchange="pullUrl(this)" require>
                                                 </div>
                                                 <p class="collapse box" id="DU">: Deployment url that will use to be url name of deployment when you want to go to website of deployment.</p>
@@ -219,13 +219,13 @@ if (!$_SESSION["username"]) {
                                                                 exit;
                                                             }
 
-                                                        $connect = pg_connect("host=172.20.10.2 port=5432 dbname=GCaaS user=postgres password=1234");
-                                                        if (!$connect) {
-                                                            print("Connection Failed.");
-                                                            exit;
-                                                        }
+                                                        // $connect = pg_connect("host=localhost port=5432 dbname=GCaaS user=postgres password=1234");
+                                                        // if (!$connect) {
+                                                        //     print("Connection Failed.");
+                                                        //     exit;
+                                                        // }
                                                         else {
-                                                            $myresult = pg_exec($connect, "SELECT \"type_Name\" FROM \"table_type\"");
+                                                            $myresult = pg_exec($_SESSION['connection'], "SELECT \"type_Name\" FROM \"table_type\"");
                                                             $rows = pg_numrows($myresult);
                                                             echo $myresult;
                                                             if ($rows != 0) {

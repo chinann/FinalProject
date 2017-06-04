@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bootstrap Paginator jQuery Plugin Examples</title>
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/2.3.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container demo_container">
+    <h1>Bootstrap Paginator jQuery Plugin</h1>
+    <div id="example">
+        <div id="page-url">
+            <h3>Page URL</h3>
+            <p>What if your pagination relies on the page parameters that's set in the url rather than ajax mode. That's where you need <strong class="bp-example-docs-option-attr">pageUrl</strong>. It accepts a function that returns a string as url for different type of pages. <strong><i class="bp-example-docs-option-value">type</i></strong>, <strong><i class="bp-example-docs-option-value">page</i></strong>, <strong><i class="bp-example-docs-option-value">current</i></strong> are given as the parameters.</p>
+            <div class="bp-docs-example">
+                <div id="a"></div>
+                <div id="bp-example-page-url"></div>
+                <div id="page-url-alert" class="alert alert-info"><span id="page-url-alert-content"></span></div>
+            </div>
+        </div>
+    </div>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" type="text/javascript"></script>
+<script src="../src/bootstrap-paginator.js"></script>
+
+<script type="text/javascript">
+
+    function pageUrlDemo(){
+
+        var pages = Math.ceil(7/10);
+
+        var options = {
+            currentPage: 1,
+            totalPages: pages,
+            pageUrl: function(type, page, current){
+              return page;
+            },
+            onPageClicked:function(e,originalEvent,type,page){
+                originalEvent.preventDefault();
+                originalEvent.stopPropagation();
+
+                var target = originalEvent.currentTarget;
+                var page = $(target).attr("href");
+
+                var last = page*10;
+                if(page == options.totalPages){
+                  last = last - (last%7);
+                }
+                var first = (page*10)-10;
+
+                document.getElementById('a').innerHTML = "";
+
+                for (var i = first; i < last; i++) {
+                      var bodyDiv = document.createElement('div');
+                      bodyDiv.id = 'display' + i;
+                      document.getElementById('a').appendChild(bodyDiv);
+                      document.getElementById('display' + i).innerHTML = "i = " + i;
+                }
+
+                $("#page-url-alert-content").text(page + " / " + options.totalPages);
+            }
+
+        }
+
+        $('#bp-example-page-url').bootstrapPaginator(options);
+
+        var last;
+        if(options.totalPages == 1){
+          last = 10 - (10%7);
+        }
+        else{
+          last = options.totalPages*10;
+        }
+
+        document.getElementById('a').innerHTML = "";
+
+        for (var i = 0; i < last; i++) {
+              var bodyDiv = document.createElement('div');
+              bodyDiv.id = 'display' + i;
+              document.getElementById('a').appendChild(bodyDiv);
+              document.getElementById('display' + i).innerHTML = "i = " + i;
+        }
+
+        $("#page-url-alert-content").text("1 / " + options.totalPages);
+    }
+
+    $(function(){
+      pageUrlDemo();
+    })
+
+
+</script>
+</body>
+</html>

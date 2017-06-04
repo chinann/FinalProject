@@ -310,7 +310,7 @@ if (!$_SESSION["username"]) {
                         exit;
                     } 
                     else {
-                        $myresult = pg_exec($connection, "SELECT * FROM table_worker WHERE \"userID\" = " . $_SESSION["userID"]);
+                        $myresult = pg_exec($_SESSION['connection'], "SELECT * FROM table_worker WHERE \"userID\" = " . $_SESSION["userID"]);
                         $rows_count = pg_numrows($myresult);
                         $column_count = pg_numfields($myresult);
                         $deploymentName = "";
@@ -325,7 +325,7 @@ if (!$_SESSION["username"]) {
                                     if ($j == 1) {
 
                                         $deploymentID = pg_result($myresult, $i, $j);
-                                        $x = pg_exec($connection, "SELECT \"deployment_Name\" ,\"deployment_URL\" FROM table_deployment  WHERE \"deploymentID\" = " . $deploymentID);
+                                        $x = pg_exec($_SESSION['connection'], "SELECT \"deployment_Name\" ,\"deployment_URL\" FROM table_deployment  WHERE \"deploymentID\" = " . $deploymentID);
                                         $xrow = pg_numrows($x);
                                         for ($a = 0; $a < $xrow; $a++) {
                                             $deploymentName = pg_result($x, $a, 0);
@@ -339,7 +339,7 @@ if (!$_SESSION["username"]) {
 
                                     } else if ($j == 3) {
                                         $roleUserID = pg_result($myresult, $i, $j);
-                                        $y = pg_exec($connection, "SELECT \"role_Name\"  FROM table_role  WHERE \"roleUserID\" =" . $roleUserID);
+                                        $y = pg_exec($_SESSION['connection'], "SELECT \"role_Name\"  FROM table_role  WHERE \"roleUserID\" =" . $roleUserID);
                                         $yrow = pg_numrows($y);
                                         for ($b = 0; $b < $yrow; $b++) {
                                             $roleName = pg_result($y, $b, 0);
@@ -513,7 +513,7 @@ if (!$_SESSION["username"]) {
                                 }
                             }
                         }
-                        xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/cgi-bin/searchUser.py?user="+user,true);
+                        xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/GCaaS-3/Python/searchUser.py?user="+user,true);
                         xmlhttp.send();
                     }
                     else {
@@ -549,7 +549,7 @@ if (!$_SESSION["username"]) {
                                 document.getElementById("role").hidden = true;
                             }
                         }
-                        xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/cgi-bin/addUser.py?user="+username+"&role="+role,true);
+                        xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/GCaaS-3/Python/addUser.py?user="+username+"&role="+role,true);
                         xmlhttp.send();
                     }
                     else {

@@ -2,7 +2,7 @@
 include "twitteroauth.php";
 session_start();
 if (!$_SESSION["username"]) {
-    header("Location: http://10.200.8.85/GCaaS-3/index.php");
+    header("Location: http://".$_SESSION['host']."/GCaaS-3/index.php");
     exit(0);
 }
 ?>
@@ -356,7 +356,7 @@ if (!$_SESSION["username"]) {
     var polygon = "MULTIPOLYGON(((";
 
     setInterval( function(){
-        
+
         if(window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
           xmlhttp=new XMLHttpRequest();
         }
@@ -422,15 +422,15 @@ if (!$_SESSION["username"]) {
             if (polygonObj!=null) {
               polygonObj.setMap(null);
             }
-            
-            if (e.type == google.maps.drawing.OverlayType.RECTANGLE) 
+
+            if (e.type == google.maps.drawing.OverlayType.RECTANGLE)
             {
               regtangObj = e.overlay;
               searchByPolygon();
                 google.maps.event.addListener(regtangObj, 'bounds_changed', searchByPolygon);
-            } 
+            }
 
-            else if (e.type == google.maps.drawing.OverlayType.POLYGON) 
+            else if (e.type == google.maps.drawing.OverlayType.POLYGON)
             {
               polygonObj = e.overlay;
               if (polygonObj.getPath().getLength()>=3) {
@@ -498,7 +498,7 @@ if (!$_SESSION["username"]) {
             }
           });
           map.fitBounds(bounds);
-        });        
+        });
     }
 
     function staticHospital() {
@@ -539,11 +539,11 @@ if (!$_SESSION["username"]) {
                         '</div>'+
                         '<h3 id="firstHeading" class="firstHeading">'+ myLatlng[i].name +'</h3>'+
                         '<div id="bodyContent">'+
-                        '<p>ละติจูด: '+ myLatlng[i].lat_itude +' ลองจิจูด: '+ myLatlng[i].long_itude +'</p>'+
+                        '<p>ละติจูด: '+ myLatlng[i].latitude +' ลองจิจูด: '+ myLatlng[i].longitude +'</p>'+
                         '</div>';
 
                         if (i == myLatlng.length-1) {
-                            var latlng = new google.maps.LatLng(myLatlng[i].lat_itude,myLatlng[i].long_itude);
+                            var latlng = new google.maps.LatLng(myLatlng[i].latitude,myLatlng[i].longitude);
                             markerHos[i] = new google.maps.Marker({
                                 position: latlng,
                                 map: map,
@@ -566,7 +566,7 @@ if (!$_SESSION["username"]) {
                         }
                         else{
                             markerHos[i] = new google.maps.Marker({
-                                position: new google.maps.LatLng(myLatlng[i].lat_itude,myLatlng[i].long_itude),
+                                position: new google.maps.LatLng(myLatlng[i].latitude,myLatlng[i].longitude),
                                 map: map,
                                 icon: hospital,
                                 title: myLatlng[i].name,
@@ -588,9 +588,9 @@ if (!$_SESSION["username"]) {
                     markerHosCluster = new MarkerClusterer(map, markerHosClus);
                 }
             }
-            xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/cgi-bin/staticData.py?typeStatic=All Hospital",true);
+            xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/GCaaS-3/Python/staticData.py?typeStatic=All Hospital",true);
             xmlhttp.send();
-        } 
+        }
         else{
             for (var i = 0; i < markerHos.length; i++) {
               markerHos[i].setMap(null);
@@ -636,11 +636,11 @@ if (!$_SESSION["username"]) {
                         '</div>'+
                         '<h3 id="firstHeading" class="firstHeading">'+ myLatlng[i].name +'</h3>'+
                         '<div id="bodyContent">'+
-                        '<p>ละติจูด: '+ myLatlng[i].lat_itude +' ลองจิจูด: '+ myLatlng[i].long_itude +'</p>'+
+                        '<p>ละติจูด: '+ myLatlng[i].latitude +' ลองจิจูด: '+ myLatlng[i].longitude +'</p>'+
                         '</div>';
 
                         if (i == myLatlng.length-1) {
-                            var latlng = new google.maps.LatLng(myLatlng[i].lat_itude,myLatlng[i].long_itude);
+                            var latlng = new google.maps.LatLng(myLatlng[i].latitude,myLatlng[i].longitude);
                             markerHosGov[i] = new google.maps.Marker({
                                 position: latlng,
                                 map: map,
@@ -663,7 +663,7 @@ if (!$_SESSION["username"]) {
                         }
                         else{
                             markerHosGov[i] = new google.maps.Marker({
-                                position: new google.maps.LatLng(myLatlng[i].lat_itude,myLatlng[i].long_itude),
+                                position: new google.maps.LatLng(myLatlng[i].latitude,myLatlng[i].longitude),
                                 map: map,
                                 icon: hospital,
                                 title: myLatlng[i].name,
@@ -685,7 +685,7 @@ if (!$_SESSION["username"]) {
                     markerHosGovCluster = new MarkerClusterer(map, markerHosGovClus);
                 }
             }
-            xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/cgi-bin/staticData.py?typeStatic=Government Hospital",true);
+            xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/GCaaS-3/Python/staticData.py?typeStatic=Government Hospital",true);
             xmlhttp.send();
         }
 
@@ -723,11 +723,11 @@ if (!$_SESSION["username"]) {
                         '</div>'+
                         '<h3 id="firstHeading" class="firstHeading">'+ myLatlng[i].name +'</h3>'+
                         '<div id="bodyContent">'+
-                        '<p>ละติจูด: '+ myLatlng[i].lat_itude +' ลองจิจูด: '+ myLatlng[i].long_itude +'</p>'+
+                        '<p>ละติจูด: '+ myLatlng[i].latitude +' ลองจิจูด: '+ myLatlng[i].longitude +'</p>'+
                         '</div>';
 
                         if (i == myLatlng.length-1) {
-                            var latlng = new google.maps.LatLng(myLatlng[i].lat_itude,myLatlng[i].long_itude);
+                            var latlng = new google.maps.LatLng(myLatlng[i].latitude,myLatlng[i].longitude);
                             markerHosPriv[i] = new google.maps.Marker({
                                 position: latlng,
                                 map: map,
@@ -750,7 +750,7 @@ if (!$_SESSION["username"]) {
                         }
                         else{
                             markerHosPriv[i] = new google.maps.Marker({
-                                position: new google.maps.LatLng(myLatlng[i].lat_itude,myLatlng[i].long_itude),
+                                position: new google.maps.LatLng(myLatlng[i].latitude,myLatlng[i].longitude),
                                 map: map,
                                 icon: hospital,
                                 title: myLatlng[i].name,
@@ -772,7 +772,7 @@ if (!$_SESSION["username"]) {
                     markerHosPrivCluster = new MarkerClusterer(map, markerHosPrivClus);
                 }
             }
-            xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/cgi-bin/staticData.py?typeStatic=Private Hospital",true);
+            xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/GCaaS-3/Python/staticData.py?typeStatic=Private Hospital",true);
             xmlhttp.send();
         }
 
@@ -810,11 +810,11 @@ if (!$_SESSION["username"]) {
                         '</div>'+
                         '<h3 id="firstHeading" class="firstHeading">'+ myLatlng[i].name +'</h3>'+
                         '<div id="bodyContent">'+
-                        '<p>ละติจูด: '+ myLatlng[i].lat_itude +' ลองจิจูด: '+ myLatlng[i].long_itude +'</p>'+
+                        '<p>ละติจูด: '+ myLatlng[i].latitude +' ลองจิจูด: '+ myLatlng[i].longitude +'</p>'+
                         '</div>';
 
                         if (i == myLatlng.length-1) {
-                            var latlng = new google.maps.LatLng(myLatlng[i].lat_itude,myLatlng[i].long_itude);
+                            var latlng = new google.maps.LatLng(myLatlng[i].latitude,myLatlng[i].longitude);
                             markerHosHeal[i] = new google.maps.Marker({
                                 position: latlng,
                                 map: map,
@@ -837,7 +837,7 @@ if (!$_SESSION["username"]) {
                         }
                         else{
                             markerHosHeal[i] = new google.maps.Marker({
-                                position: new google.maps.LatLng(myLatlng[i].lat_itude,myLatlng[i].long_itude),
+                                position: new google.maps.LatLng(myLatlng[i].latitude,myLatlng[i].longitude),
                                 map: map,
                                 icon: hospital,
                                 title: myLatlng[i].name,
@@ -859,7 +859,7 @@ if (!$_SESSION["username"]) {
                     markerHosHealCluster = new MarkerClusterer(map, markerHosHealClus);
                 }
             }
-            xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/cgi-bin/staticData.py?typeStatic=Health Center",true);
+            xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/GCaaS-3/Python/staticData.py?typeStatic=Health Center",true);
             xmlhttp.send();
         }
 
@@ -916,11 +916,11 @@ if (!$_SESSION["username"]) {
                         '</div>'+
                         '<h3 id="firstHeading" class="firstHeading">'+ myLatlng[i].name +'</h3>'+
                         '<div id="bodyContent">'+
-                        '<p>ละติจูด: '+ myLatlng[i].lat_itude +' ลองจิจูด: '+ myLatlng[i].long_itude +'</p>'+
+                        '<p>ละติจูด: '+ myLatlng[i].latitude +' ลองจิจูด: '+ myLatlng[i].longitude +'</p>'+
                         '</div>';
 
                         if (i == myLatlng.length-1) {
-                            var latlng = new google.maps.LatLng(myLatlng[i].lat_itude,myLatlng[i].long_itude);
+                            var latlng = new google.maps.LatLng(myLatlng[i].latitude,myLatlng[i].longitude);
                             markerSch[i] = new google.maps.Marker({
                                 position: latlng,
                                 map: map,
@@ -943,7 +943,7 @@ if (!$_SESSION["username"]) {
                         }
                         else{
                             markerSch[i] = new google.maps.Marker({
-                                position: new google.maps.LatLng(myLatlng[i].lat_itude,myLatlng[i].long_itude),
+                                position: new google.maps.LatLng(myLatlng[i].latitude,myLatlng[i].longitude),
                                 map: map,
                                 icon: school,
                                 title: myLatlng[i].name,
@@ -965,9 +965,9 @@ if (!$_SESSION["username"]) {
                     markerSchCluster = new MarkerClusterer(map, markerSchClus);
                 }
             }
-            xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/cgi-bin/staticData.py?typeStatic=All School",true);
+            xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/GCaaS-3/Python/staticData.py?typeStatic=All School",true);
             xmlhttp.send();
-        } 
+        }
         else{
             for (var i = 0; i < markerSch.length; i++) {
               markerSch[i].setMap(null);
@@ -1014,11 +1014,11 @@ if (!$_SESSION["username"]) {
                         '</div>'+
                         '<h3 id="firstHeading" class="firstHeading">'+ myLatlng[i].name +'</h3>'+
                         '<div id="bodyContent">'+
-                        '<p>ละติจูด: '+ myLatlng[i].lat_itude +' ลองจิจูด: '+ myLatlng[i].long_itude +'</p>'+
+                        '<p>ละติจูด: '+ myLatlng[i].latitude +' ลองจิจูด: '+ myLatlng[i].longitude +'</p>'+
                         '</div>';
 
                         if (i == myLatlng.length-1) {
-                            var latlng = new google.maps.LatLng(myLatlng[i].lat_itude,myLatlng[i].long_itude);
+                            var latlng = new google.maps.LatLng(myLatlng[i].latitude,myLatlng[i].longitude);
                             markerHos[i] = new google.maps.Marker({
                                 position: latlng,
                                 map: map,
@@ -1041,7 +1041,7 @@ if (!$_SESSION["username"]) {
                         }
                         else{
                             markerHos[i] = new google.maps.Marker({
-                                position: new google.maps.LatLng(myLatlng[i].lat_itude,myLatlng[i].long_itude),
+                                position: new google.maps.LatLng(myLatlng[i].latitude,myLatlng[i].longitude),
                                 map: map,
                                 icon: hospital,
                                 title: myLatlng[i].name,
@@ -1063,7 +1063,7 @@ if (!$_SESSION["username"]) {
                     markerHosCluster = new MarkerClusterer(map, markerHosClus);
                 }
             }
-            xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/cgi-bin/staticData.py?typeStatic=Government and Private School",true);
+            xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/GCaaS-3/Python/staticData.py?typeStatic=Government and Private School",true);
             xmlhttp.send();
         }
 
@@ -1089,11 +1089,11 @@ if (!$_SESSION["username"]) {
                         '</div>'+
                         '<h3 id="firstHeading" class="firstHeading">'+ myLatlng[i].name +'</h3>'+
                         '<div id="bodyContent">'+
-                        '<p>ละติจูด: '+ myLatlng[i].lat_itude +' ลองจิจูด: '+ myLatlng[i].long_itude +'</p>'+
+                        '<p>ละติจูด: '+ myLatlng[i].latitude +' ลองจิจูด: '+ myLatlng[i].longitude +'</p>'+
                         '</div>';
 
                         if (i == myLatlng.length-1) {
-                            var latlng = new google.maps.LatLng(myLatlng[i].lat_itude,myLatlng[i].long_itude);
+                            var latlng = new google.maps.LatLng(myLatlng[i].latitude,myLatlng[i].longitude);
                             markerHos[i] = new google.maps.Marker({
                                 position: latlng,
                                 map: map,
@@ -1116,7 +1116,7 @@ if (!$_SESSION["username"]) {
                         }
                         else{
                             markerHos[i] = new google.maps.Marker({
-                                position: new google.maps.LatLng(myLatlng[i].lat_itude,myLatlng[i].long_itude),
+                                position: new google.maps.LatLng(myLatlng[i].latitude,myLatlng[i].longitude),
                                 map: map,
                                 icon: hospital,
                                 title: myLatlng[i].name,
@@ -1138,7 +1138,7 @@ if (!$_SESSION["username"]) {
                     markerHosCluster = new MarkerClusterer(map, markerHosClus);
                 }
             }
-            xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/cgi-bin/staticData.py?typeStatic=Government School and University",true);
+            xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/GCaaS-3/Python/staticData.py?typeStatic=Government School and University",true);
             xmlhttp.send();
         }
 
@@ -1164,11 +1164,11 @@ if (!$_SESSION["username"]) {
                         '</div>'+
                         '<h3 id="firstHeading" class="firstHeading">'+ myLatlng[i].name +'</h3>'+
                         '<div id="bodyContent">'+
-                        '<p>ละติจูด: '+ myLatlng[i].lat_itude +' ลองจิจูด: '+ myLatlng[i].long_itude +'</p>'+
+                        '<p>ละติจูด: '+ myLatlng[i].latitude +' ลองจิจูด: '+ myLatlng[i].longitude +'</p>'+
                         '</div>';
 
                         if (i == myLatlng.length-1) {
-                            var latlng = new google.maps.LatLng(myLatlng[i].lat_itude,myLatlng[i].long_itude);
+                            var latlng = new google.maps.LatLng(myLatlng[i].latitude,myLatlng[i].longitude);
                             markerHos[i] = new google.maps.Marker({
                                 position: latlng,
                                 map: map,
@@ -1191,7 +1191,7 @@ if (!$_SESSION["username"]) {
                         }
                         else{
                             markerHos[i] = new google.maps.Marker({
-                                position: new google.maps.LatLng(myLatlng[i].lat_itude,myLatlng[i].long_itude),
+                                position: new google.maps.LatLng(myLatlng[i].latitude,myLatlng[i].longitude),
                                 map: map,
                                 icon: hospital,
                                 title: myLatlng[i].name,
@@ -1213,7 +1213,7 @@ if (!$_SESSION["username"]) {
                     markerHosCluster = new MarkerClusterer(map, markerHosClus);
                 }
             }
-            xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/cgi-bin/staticData.py?typeStatic=Private School and University",true);
+            xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/GCaaS-3/Python/staticData.py?typeStatic=Private School and University",true);
             xmlhttp.send();
         }
 
@@ -1239,11 +1239,11 @@ if (!$_SESSION["username"]) {
                         '</div>'+
                         '<h3 id="firstHeading" class="firstHeading">'+ myLatlng[i].name +'</h3>'+
                         '<div id="bodyContent">'+
-                        '<p>ละติจูด: '+ myLatlng[i].lat_itude +' ลองจิจูด: '+ myLatlng[i].long_itude +'</p>'+
+                        '<p>ละติจูด: '+ myLatlng[i].latitude +' ลองจิจูด: '+ myLatlng[i].longitude +'</p>'+
                         '</div>';
 
                         if (i == myLatlng.length-1) {
-                            var latlng = new google.maps.LatLng(myLatlng[i].lat_itude,myLatlng[i].long_itude);
+                            var latlng = new google.maps.LatLng(myLatlng[i].latitude,myLatlng[i].longitude);
                             markerHos[i] = new google.maps.Marker({
                                 position: latlng,
                                 map: map,
@@ -1266,7 +1266,7 @@ if (!$_SESSION["username"]) {
                         }
                         else{
                             markerHos[i] = new google.maps.Marker({
-                                position: new google.maps.LatLng(myLatlng[i].lat_itude,myLatlng[i].long_itude),
+                                position: new google.maps.LatLng(myLatlng[i].latitude,myLatlng[i].longitude),
                                 map: map,
                                 icon: hospital,
                                 title: myLatlng[i].name,
@@ -1288,7 +1288,7 @@ if (!$_SESSION["username"]) {
                     markerHosCluster = new MarkerClusterer(map, markerHosClus);
                 }
             }
-            xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/cgi-bin/staticData.py?typeStatic=Government School",true);
+            xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/GCaaS-3/Python/staticData.py?typeStatic=Government School",true);
             xmlhttp.send();
         }
 
@@ -1314,11 +1314,11 @@ if (!$_SESSION["username"]) {
                         '</div>'+
                         '<h3 id="firstHeading" class="firstHeading">'+ myLatlng[i].name +'</h3>'+
                         '<div id="bodyContent">'+
-                        '<p>ละติจูด: '+ myLatlng[i].lat_itude +' ลองจิจูด: '+ myLatlng[i].long_itude +'</p>'+
+                        '<p>ละติจูด: '+ myLatlng[i].latitude +' ลองจิจูด: '+ myLatlng[i].longitude +'</p>'+
                         '</div>';
 
                         if (i == myLatlng.length-1) {
-                            var latlng = new google.maps.LatLng(myLatlng[i].lat_itude,myLatlng[i].long_itude);
+                            var latlng = new google.maps.LatLng(myLatlng[i].latitude,myLatlng[i].longitude);
                             markerHos[i] = new google.maps.Marker({
                                 position: latlng,
                                 map: map,
@@ -1341,7 +1341,7 @@ if (!$_SESSION["username"]) {
                         }
                         else{
                             markerHos[i] = new google.maps.Marker({
-                                position: new google.maps.LatLng(myLatlng[i].lat_itude,myLatlng[i].long_itude),
+                                position: new google.maps.LatLng(myLatlng[i].latitude,myLatlng[i].longitude),
                                 map: map,
                                 icon: hospital,
                                 title: myLatlng[i].name,
@@ -1363,7 +1363,7 @@ if (!$_SESSION["username"]) {
                     markerHosCluster = new MarkerClusterer(map, markerHosClus);
                 }
             }
-            xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/cgi-bin/staticData.py?typeStatic=Private School",true);
+            xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/GCaaS-3/Python/staticData.py?typeStatic=Private School",true);
             xmlhttp.send();
         }
 
@@ -1389,11 +1389,11 @@ if (!$_SESSION["username"]) {
                         '</div>'+
                         '<h3 id="firstHeading" class="firstHeading">'+ myLatlng[i].name +'</h3>'+
                         '<div id="bodyContent">'+
-                        '<p>ละติจูด: '+ myLatlng[i].lat_itude +' ลองจิจูด: '+ myLatlng[i].long_itude +'</p>'+
+                        '<p>ละติจูด: '+ myLatlng[i].latitude +' ลองจิจูด: '+ myLatlng[i].longitude +'</p>'+
                         '</div>';
 
                         if (i == myLatlng.length-1) {
-                            var latlng = new google.maps.LatLng(myLatlng[i].lat_itude,myLatlng[i].long_itude);
+                            var latlng = new google.maps.LatLng(myLatlng[i].latitude,myLatlng[i].longitude);
                             markerHos[i] = new google.maps.Marker({
                                 position: latlng,
                                 map: map,
@@ -1416,7 +1416,7 @@ if (!$_SESSION["username"]) {
                         }
                         else{
                             markerHos[i] = new google.maps.Marker({
-                                position: new google.maps.LatLng(myLatlng[i].lat_itude,myLatlng[i].long_itude),
+                                position: new google.maps.LatLng(myLatlng[i].latitude,myLatlng[i].longitude),
                                 map: map,
                                 icon: hospital,
                                 title: myLatlng[i].name,
@@ -1438,10 +1438,10 @@ if (!$_SESSION["username"]) {
                     markerHosCluster = new MarkerClusterer(map, markerHosClus);
                 }
             }
-            xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/cgi-bin/staticData.py?typeStatic=University",true);
+            xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/GCaaS-3/Python/staticData.py?typeStatic=University",true);
             xmlhttp.send();
         }
-         
+
         else{
             for (var i = 0; i < markerHos.length; i++) {
               markerHos[i].setMap(null);
@@ -1491,11 +1491,11 @@ if (!$_SESSION["username"]) {
                         '</div>'+
                         '<h3 id="firstHeading" class="firstHeading">'+ myLatlng[i].name +'</h3>'+
                         '<div id="bodyContent">'+
-                        '<p>ละติจูด: '+ myLatlng[i].lat_itude +' ลองจิจูด: '+ myLatlng[i].long_itude +'</p>'+
+                        '<p>ละติจูด: '+ myLatlng[i].latitude +' ลองจิจูด: '+ myLatlng[i].longitude +'</p>'+
                         '</div>';
 
                         if (i == myLatlng.length-1) {
-                            var latlng = new google.maps.LatLng(myLatlng[i].lat_itude,myLatlng[i].long_itude);
+                            var latlng = new google.maps.LatLng(myLatlng[i].latitude,myLatlng[i].longitude);
                             markerPol[i] = new google.maps.Marker({
                                 position: latlng,
                                 map: map,
@@ -1518,7 +1518,7 @@ if (!$_SESSION["username"]) {
                         }
                         else{
                             markerPol[i] = new google.maps.Marker({
-                                position: new google.maps.LatLng(myLatlng[i].lat_itude,myLatlng[i].long_itude),
+                                position: new google.maps.LatLng(myLatlng[i].latitude,myLatlng[i].longitude),
                                 map: map,
                                 icon: police,
                                 title: myLatlng[i].name,
@@ -1540,9 +1540,9 @@ if (!$_SESSION["username"]) {
                     markerPolCluster = new MarkerClusterer(map, markerPol);
                 }
             }
-            xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/cgi-bin/staticData.py?typeStatic=All Police station",true);
+            xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/GCaaS-3/Python/staticData.py?typeStatic=All Police station",true);
             xmlhttp.send();
-        } 
+        }
         else{
             for (var i = 0; i < markerPol.length; i++) {
               markerPol[i].setMap(null);
@@ -1592,11 +1592,11 @@ if (!$_SESSION["username"]) {
                         '</div>'+
                         '<h3 id="firstHeading" class="firstHeading">'+ myLatlng[i].name +'</h3>'+
                         '<div id="bodyContent">'+
-                        '<p>ละติจูด: '+ myLatlng[i].lat_itude +' ลองจิจูด: '+ myLatlng[i].long_itude +'</p>'+
+                        '<p>ละติจูด: '+ myLatlng[i].latitude +' ลองจิจูด: '+ myLatlng[i].longitude +'</p>'+
                         '</div>';
 
                         if (i == myLatlng.length-1) {
-                            var latlng = new google.maps.LatLng(myLatlng[i].lat_itude,myLatlng[i].long_itude);
+                            var latlng = new google.maps.LatLng(myLatlng[i].latitude,myLatlng[i].longitude);
                             markerFir[i] = new google.maps.Marker({
                                 position: latlng,
                                 map: map,
@@ -1619,7 +1619,7 @@ if (!$_SESSION["username"]) {
                         }
                         else{
                             markerFir[i] = new google.maps.Marker({
-                                position: new google.maps.LatLng(myLatlng[i].lat_itude,myLatlng[i].long_itude),
+                                position: new google.maps.LatLng(myLatlng[i].latitude,myLatlng[i].longitude),
                                 map: map,
                                 icon: fire,
                                 title: myLatlng[i].name,
@@ -1641,9 +1641,9 @@ if (!$_SESSION["username"]) {
                     markerFirCluster = new MarkerClusterer(map, markerFirClus);
                 }
             }
-            xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/cgi-bin/staticData.py?typeStatic=All Fire station",true);
+            xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/GCaaS-3/Python/staticData.py?typeStatic=All Fire station",true);
             xmlhttp.send();
-        } 
+        }
         else{
             for (var i = 0; i < markerFir.length; i++) {
               markerFir[i].setMap(null);
@@ -1693,11 +1693,11 @@ if (!$_SESSION["username"]) {
                         '</div>'+
                         '<h3 id="firstHeading" class="firstHeading">'+ myLatlng[i].name +'</h3>'+
                         '<div id="bodyContent">'+
-                        '<p>ละติจูด: '+ myLatlng[i].lat_itude +' ลองจิจูด: '+ myLatlng[i].long_itude +'</p>'+
+                        '<p>ละติจูด: '+ myLatlng[i].latitude +' ลองจิจูด: '+ myLatlng[i].longitude +'</p>'+
                         '</div>';
 
                         if (i == myLatlng.length-1) {
-                            var latlng = new google.maps.LatLng(myLatlng[i].lat_itude,myLatlng[i].long_itude);
+                            var latlng = new google.maps.LatLng(myLatlng[i].latitude,myLatlng[i].longitude);
                             markerTem[i] = new google.maps.Marker({
                                 position: latlng,
                                 map: map,
@@ -1720,7 +1720,7 @@ if (!$_SESSION["username"]) {
                         }
                         else{
                             markerTem[i] = new google.maps.Marker({
-                                position: new google.maps.LatLng(myLatlng[i].lat_itude,myLatlng[i].long_itude),
+                                position: new google.maps.LatLng(myLatlng[i].latitude,myLatlng[i].longitude),
                                 map: map,
                                 icon: temple,
                                 title: myLatlng[i].name,
@@ -1742,9 +1742,9 @@ if (!$_SESSION["username"]) {
                     markerTemCluster = new MarkerClusterer(map, markerTemClus);
                 }
             }
-            xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/cgi-bin/staticData.py?typeStatic=All Temple",true);
+            xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/GCaaS-3/Python/staticData.py?typeStatic=All Temple",true);
             xmlhttp.send();
-        } 
+        }
         else{
             for (var i = 0; i < markerTem.length; i++) {
               markerTem[i].setMap(null);
@@ -1791,11 +1791,11 @@ if (!$_SESSION["username"]) {
                         '</div>'+
                         '<h3 id="firstHeading" class="firstHeading">'+ myLatlng[i].name +'</h3>'+
                         '<div id="bodyContent">'+
-                        '<p>ละติจูด: '+ myLatlng[i].lat_itude +' ลองจิจูด: '+ myLatlng[i].long_itude +'</p>'+
+                        '<p>ละติจูด: '+ myLatlng[i].latitude +' ลองจิจูด: '+ myLatlng[i].longitude +'</p>'+
                         '</div>';
 
                         if (i == myLatlng.length-1) {
-                            var latlng = new google.maps.LatLng(myLatlng[i].lat_itude,myLatlng[i].long_itude);
+                            var latlng = new google.maps.LatLng(myLatlng[i].latitude,myLatlng[i].longitude);
                             markerHos[i] = new google.maps.Marker({
                                 position: latlng,
                                 map: map,
@@ -1818,7 +1818,7 @@ if (!$_SESSION["username"]) {
                         }
                         else{
                             markerHos[i] = new google.maps.Marker({
-                                position: new google.maps.LatLng(myLatlng[i].lat_itude,myLatlng[i].long_itude),
+                                position: new google.maps.LatLng(myLatlng[i].latitude,myLatlng[i].longitude),
                                 map: map,
                                 icon: hospital,
                                 title: myLatlng[i].name,
@@ -1840,7 +1840,7 @@ if (!$_SESSION["username"]) {
                     markerHosCluster = new MarkerClusterer(map, markerHosClus);
                 }
             }
-            xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/cgi-bin/staticData.py?typeStatic=Temple and Church",true);
+            xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/GCaaS-3/Python/staticData.py?typeStatic=Temple and Church",true);
             xmlhttp.send();
         }
 
@@ -1866,11 +1866,11 @@ if (!$_SESSION["username"]) {
                         '</div>'+
                         '<h3 id="firstHeading" class="firstHeading">'+ myLatlng[i].name +'</h3>'+
                         '<div id="bodyContent">'+
-                        '<p>ละติจูด: '+ myLatlng[i].lat_itude +' ลองจิจูด: '+ myLatlng[i].long_itude +'</p>'+
+                        '<p>ละติจูด: '+ myLatlng[i].latitude +' ลองจิจูด: '+ myLatlng[i].longitude +'</p>'+
                         '</div>';
 
                         if (i == myLatlng.length-1) {
-                            var latlng = new google.maps.LatLng(myLatlng[i].lat_itude,myLatlng[i].long_itude);
+                            var latlng = new google.maps.LatLng(myLatlng[i].latitude,myLatlng[i].longitude);
                             markerHos[i] = new google.maps.Marker({
                                 position: latlng,
                                 map: map,
@@ -1893,7 +1893,7 @@ if (!$_SESSION["username"]) {
                         }
                         else{
                             markerHos[i] = new google.maps.Marker({
-                                position: new google.maps.LatLng(myLatlng[i].lat_itude,myLatlng[i].long_itude),
+                                position: new google.maps.LatLng(myLatlng[i].latitude,myLatlng[i].longitude),
                                 map: map,
                                 icon: hospital,
                                 title: myLatlng[i].name,
@@ -1915,7 +1915,7 @@ if (!$_SESSION["username"]) {
                     markerHosCluster = new MarkerClusterer(map, markerHosClus);
                 }
             }
-            xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/cgi-bin/staticData.py?typeStatic=Temple and Muslim",true);
+            xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/GCaaS-3/Python/staticData.py?typeStatic=Temple and Muslim",true);
             xmlhttp.send();
         }
 
@@ -1941,11 +1941,11 @@ if (!$_SESSION["username"]) {
                         '</div>'+
                         '<h3 id="firstHeading" class="firstHeading">'+ myLatlng[i].name +'</h3>'+
                         '<div id="bodyContent">'+
-                        '<p>ละติจูด: '+ myLatlng[i].lat_itude +' ลองจิจูด: '+ myLatlng[i].long_itude +'</p>'+
+                        '<p>ละติจูด: '+ myLatlng[i].latitude +' ลองจิจูด: '+ myLatlng[i].longitude +'</p>'+
                         '</div>';
 
                         if (i == myLatlng.length-1) {
-                            var latlng = new google.maps.LatLng(myLatlng[i].lat_itude,myLatlng[i].long_itude);
+                            var latlng = new google.maps.LatLng(myLatlng[i].latitude,myLatlng[i].longitude);
                             markerHos[i] = new google.maps.Marker({
                                 position: latlng,
                                 map: map,
@@ -1968,7 +1968,7 @@ if (!$_SESSION["username"]) {
                         }
                         else{
                             markerHos[i] = new google.maps.Marker({
-                                position: new google.maps.LatLng(myLatlng[i].lat_itude,myLatlng[i].long_itude),
+                                position: new google.maps.LatLng(myLatlng[i].latitude,myLatlng[i].longitude),
                                 map: map,
                                 icon: hospital,
                                 title: myLatlng[i].name,
@@ -1990,7 +1990,7 @@ if (!$_SESSION["username"]) {
                     markerHosCluster = new MarkerClusterer(map, markerHosClus);
                 }
             }
-            xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/cgi-bin/staticData.py?typeStatic=Church and Muslim",true);
+            xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/GCaaS-3/Python/staticData.py?typeStatic=Church and Muslim",true);
             xmlhttp.send();
         }
 
@@ -2016,11 +2016,11 @@ if (!$_SESSION["username"]) {
                         '</div>'+
                         '<h3 id="firstHeading" class="firstHeading">'+ myLatlng[i].name +'</h3>'+
                         '<div id="bodyContent">'+
-                        '<p>ละติจูด: '+ myLatlng[i].lat_itude +' ลองจิจูด: '+ myLatlng[i].long_itude +'</p>'+
+                        '<p>ละติจูด: '+ myLatlng[i].latitude +' ลองจิจูด: '+ myLatlng[i].longitude +'</p>'+
                         '</div>';
 
                         if (i == myLatlng.length-1) {
-                            var latlng = new google.maps.LatLng(myLatlng[i].lat_itude,myLatlng[i].long_itude);
+                            var latlng = new google.maps.LatLng(myLatlng[i].latitude,myLatlng[i].longitude);
                             markerHos[i] = new google.maps.Marker({
                                 position: latlng,
                                 map: map,
@@ -2043,7 +2043,7 @@ if (!$_SESSION["username"]) {
                         }
                         else{
                             markerHos[i] = new google.maps.Marker({
-                                position: new google.maps.LatLng(myLatlng[i].lat_itude,myLatlng[i].long_itude),
+                                position: new google.maps.LatLng(myLatlng[i].latitude,myLatlng[i].longitude),
                                 map: map,
                                 icon: hospital,
                                 title: myLatlng[i].name,
@@ -2065,7 +2065,7 @@ if (!$_SESSION["username"]) {
                     markerHosCluster = new MarkerClusterer(map, markerHosClus);
                 }
             }
-            xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/cgi-bin/staticData.py?typeStatic=Temple",true);
+            xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/GCaaS-3/Python/staticData.py?typeStatic=Temple",true);
             xmlhttp.send();
         }
 
@@ -2091,11 +2091,11 @@ if (!$_SESSION["username"]) {
                         '</div>'+
                         '<h3 id="firstHeading" class="firstHeading">'+ myLatlng[i].name +'</h3>'+
                         '<div id="bodyContent">'+
-                        '<p>ละติจูด: '+ myLatlng[i].lat_itude +' ลองจิจูด: '+ myLatlng[i].long_itude +'</p>'+
+                        '<p>ละติจูด: '+ myLatlng[i].latitude +' ลองจิจูด: '+ myLatlng[i].longitude +'</p>'+
                         '</div>';
 
                         if (i == myLatlng.length-1) {
-                            var latlng = new google.maps.LatLng(myLatlng[i].lat_itude,myLatlng[i].long_itude);
+                            var latlng = new google.maps.LatLng(myLatlng[i].latitude,myLatlng[i].longitude);
                             markerHos[i] = new google.maps.Marker({
                                 position: latlng,
                                 map: map,
@@ -2118,7 +2118,7 @@ if (!$_SESSION["username"]) {
                         }
                         else{
                             markerHos[i] = new google.maps.Marker({
-                                position: new google.maps.LatLng(myLatlng[i].lat_itude,myLatlng[i].long_itude),
+                                position: new google.maps.LatLng(myLatlng[i].latitude,myLatlng[i].longitude),
                                 map: map,
                                 icon: hospital,
                                 title: myLatlng[i].name,
@@ -2140,7 +2140,7 @@ if (!$_SESSION["username"]) {
                     markerHosCluster = new MarkerClusterer(map, markerHosClus);
                 }
             }
-            xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/cgi-bin/staticData.py?typeStatic=Church",true);
+            xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/GCaaS-3/Python/staticData.py?typeStatic=Church",true);
             xmlhttp.send();
         }
 
@@ -2166,11 +2166,11 @@ if (!$_SESSION["username"]) {
                         '</div>'+
                         '<h3 id="firstHeading" class="firstHeading">'+ myLatlng[i].name +'</h3>'+
                         '<div id="bodyContent">'+
-                        '<p>ละติจูด: '+ myLatlng[i].lat_itude +' ลองจิจูด: '+ myLatlng[i].long_itude +'</p>'+
+                        '<p>ละติจูด: '+ myLatlng[i].latitude +' ลองจิจูด: '+ myLatlng[i].longitude +'</p>'+
                         '</div>';
 
                         if (i == myLatlng.length-1) {
-                            var latlng = new google.maps.LatLng(myLatlng[i].lat_itude,myLatlng[i].long_itude);
+                            var latlng = new google.maps.LatLng(myLatlng[i].latitude,myLatlng[i].longitude);
                             markerHos[i] = new google.maps.Marker({
                                 position: latlng,
                                 map: map,
@@ -2193,7 +2193,7 @@ if (!$_SESSION["username"]) {
                         }
                         else{
                             markerHos[i] = new google.maps.Marker({
-                                position: new google.maps.LatLng(myLatlng[i].lat_itude,myLatlng[i].long_itude),
+                                position: new google.maps.LatLng(myLatlng[i].latitude,myLatlng[i].longitude),
                                 map: map,
                                 icon: hospital,
                                 title: myLatlng[i].name,
@@ -2215,10 +2215,10 @@ if (!$_SESSION["username"]) {
                     markerHosCluster = new MarkerClusterer(map, markerHosClus);
                 }
             }
-            xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/cgi-bin/staticData.py?typeStatic=Muslim",true);
+            xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/GCaaS-3/Python/staticData.py?typeStatic=Muslim",true);
             xmlhttp.send();
         }
-         
+
         else{
             for (var i = 0; i < markerHos.length; i++) {
               markerHos[i].setMap(null);
@@ -2253,7 +2253,7 @@ if (!$_SESSION["username"]) {
             {
                 if (xmlhttp.readyState==4 && xmlhttp.status==200)//200=status ok!
                 {
-                    // tw = setInterval(function(){ 
+                    // tw = setInterval(function(){
                         for (var i = 0; i < markerTW.length; i++) {
                           markerTW[i].setMap(null);
                         }
@@ -2280,7 +2280,7 @@ if (!$_SESSION["username"]) {
                                   '<option value="Solved">Solved</option>'+
                                 '</select><input type="button" onclick = "changeStatus('+ myLatlng[i].ID +')" value="Changes"></p>'+
                                 '<p><b>Location </b>: '+ myLatlng[i].place +'</p>'+
-                                '<p><b>Latitude </b>: '+ myLatlng[i].lat_itude +' <b>Longitude </b>: '+ myLatlng[i].long_itude +'</p>'+
+                                '<p><b>Latitude </b>: '+ myLatlng[i].latitude +' <b>Longitude </b>: '+ myLatlng[i].longitude +'</p>'+
                                 '</div>';
                             }
                             else if (myLatlng[i].status == "Visited") {
@@ -2297,9 +2297,9 @@ if (!$_SESSION["username"]) {
                                   '<option value="Solved">Solved</option>'+
                                 '</select><input type="button" onclick = "changeStatus('+ myLatlng[i].ID +')" value="Changes"></p>'+
                                 '<p><b>Location </b>: '+ myLatlng[i].place +'</p>'+
-                                '<p><b>Latitude </b>: '+ myLatlng[i].lat_itude +' <b>Longitude </b>: '+ myLatlng[i].long_itude +'</p>'+
+                                '<p><b>Latitude </b>: '+ myLatlng[i].latitude +' <b>Longitude </b>: '+ myLatlng[i].longitude +'</p>'+
                                 '</div>';
-                            } 
+                            }
                             else{
                                 var contentStr = '<div id="content">'+
                                 '<div id="siteNotice">'+
@@ -2314,13 +2314,13 @@ if (!$_SESSION["username"]) {
                                   '<option value="Solved" selected>'+ myLatlng[i].status +'</option>'+
                                 '</select><input type="button" onclick = "changeStatus('+ myLatlng[i].ID +')" value="Changes"></p>'+
                                 '<p><b>Location </b>: '+ myLatlng[i].place +'</p>'+
-                                '<p><b>Latitude </b>: '+ myLatlng[i].lat_itude +' <b>Longitude </b>: '+ myLatlng[i].long_itude +'</p>'+
+                                '<p><b>Latitude </b>: '+ myLatlng[i].latitude +' <b>Longitude </b>: '+ myLatlng[i].longitude +'</p>'+
                                 '</div>';
                             };
-                            
+
 
                             if (i == myLatlng.length-1) {
-                                var latlng = new google.maps.LatLng(myLatlng[i].lat_itude,myLatlng[i].long_itude);
+                                var latlng = new google.maps.LatLng(myLatlng[i].latitude,myLatlng[i].longitude);
                                 markerTW[i] = new google.maps.Marker({
                                     position: latlng,
                                     map: map,
@@ -2343,7 +2343,7 @@ if (!$_SESSION["username"]) {
                             }
                             else{
                                 markerTW[i] = new google.maps.Marker({
-                                    position: new google.maps.LatLng(myLatlng[i].lat_itude,myLatlng[i].long_itude),
+                                    position: new google.maps.LatLng(myLatlng[i].latitude,myLatlng[i].longitude),
                                     map: map,
                                     icon: twitter,
                                     title: myLatlng[i].name,
@@ -2366,9 +2366,9 @@ if (!$_SESSION["username"]) {
                     // },5000);
                 }
             }
-            xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/cgi-bin/dynamicData.py",true);
+            xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/GCaaS-3/Python/dynamicData.py",true);
             xmlhttp.send();
-        } 
+        }
         else{
             for (var i = 0; i < markerTW.length; i++) {
               markerTW[i].setMap(null);
@@ -2398,16 +2398,16 @@ if (!$_SESSION["username"]) {
         xmlhttp.onreadystatechange=function()
         {
             if (xmlhttp.readyState==4 && xmlhttp.status==200)//200=status ok!
-            {   
+            {
                 obj = JSON.parse(xmlhttp.responseText);
 
                 if (obj.status == "ok") {
                     alert("Save Successfully");
-                }     
-                
-            }   
+                }
+
+            }
         }
-        xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/cgi-bin/status.py?status="+status+"&id="+id,true);
+        xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/GCaaS-3/Python/status.py?status="+status+"&id="+id,true);
         xmlhttp.send();
     }
 
@@ -2415,7 +2415,7 @@ if (!$_SESSION["username"]) {
         if (markAdd!=null) {
           clearMarkers();
         }
-        
+
         addMarkerWithTimeout(map.getCenter(), 1 * 200);
     }
 
@@ -2436,7 +2436,7 @@ if (!$_SESSION["username"]) {
 
                 var contentString = '<b>Location</b><br>' +
                   'Latitude: ' + lat + ', ' +
-                  'Longitude: ' + lng + '<br><b>Type: </b>' + '<select name="type" id="type">' + '<option value="Help">Help</option>' + 
+                  'Longitude: ' + lng + '<br><b>Type: </b>' + '<select name="type" id="type">' + '<option value="Help">Help</option>' +
                   '<option value="Road">Road</option>' + '</select>' + '<br><b>Message: </b>' + '<textarea class="form-control" id="msg" style="resize:none;"></textarea>' +
                   '<input type="button" class="btn-primary btn-block" value="OK" style="margin-top: 10px;" onclick="saveRequest('+lat+','+lng+')">';
                 infoWindow.setContent(contentString);
@@ -2448,7 +2448,7 @@ if (!$_SESSION["username"]) {
 
                 var contentString = '<b>Location</b><br>' +
                   'Latitude: ' + lat + ', ' +
-                  'Longitude: ' + lng + '<br><b>Type: </b>' + '<select name="type" id="type">' + '<option value="help">Help</option>' + 
+                  'Longitude: ' + lng + '<br><b>Type: </b>' + '<select name="type" id="type">' + '<option value="help">Help</option>' +
                   '<option value="road">Road</option>' + '</select>' + '<br><b>Message: </b>' + '<textarea class="form-control" id="msg" style="resize:none;"></textarea>' +
                   '<input type="button" class="btn-primary btn-block" value="OK" style="margin-top: 10px;" onclick="saveRequest('+lat+','+lng+')">';
                 infoWindow.setContent(contentString);
@@ -2471,17 +2471,17 @@ if (!$_SESSION["username"]) {
         xmlhttp.onreadystatechange=function()
         {
             if (xmlhttp.readyState==4 && xmlhttp.status==200)//200=status ok!
-            {   
+            {
                 obj = JSON.parse(xmlhttp.responseText);
 
                 if (obj.status == "ok") {
                     alert("Insert data successfully");
                 }
-                clearMarkers();     
-                
-            }   
+                clearMarkers();
+
+            }
         }
-        xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/cgi-bin/insertRequest.py?type="+type+"&msg="+msg+"&lat="+lat+"&lng="+lng,true);
+        xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/GCaaS-3/Python/insertRequest.py?type="+type+"&msg="+msg+"&lat="+lat+"&lng="+lng,true);
         xmlhttp.send();
     }
 
@@ -2531,7 +2531,7 @@ if (!$_SESSION["username"]) {
         markerHosClus = [];
         markerHos = [];
         markerHosCluster.clearMarkers();
-        
+
         for (var i = 0; i < markerSch.length; i++) {
           markerSch[i].setMap(null);
         }
@@ -2551,7 +2551,7 @@ if (!$_SESSION["username"]) {
         markerPolClus = [];
         markerPol = [];
         markerPolCluster.clearMarkers();
-        
+
         for (var i = 0; i < markerFir.length; i++) {
           markerFir[i].setMap(null);
         }
@@ -2590,7 +2590,7 @@ if (!$_SESSION["username"]) {
           if (xmlhttp.readyState==4 && xmlhttp.status==200 ) //200 OK do 4 stage
             {
               var infowindow;
-        
+
               myLatlng = JSON.parse(xmlhttp.responseText);
               if (myLatlng.data.length==0) {
                 alert("ไม่พบสถานที่ค้นหา");
@@ -2653,7 +2653,7 @@ if (!$_SESSION["username"]) {
               }
             }
         }
-        xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/cgi-bin/searchByArea.py?type="+type+"&msg="+msg+"&lat="+lat+"&lng="+lng,true);
+        xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/GCaaS-3/Python/searchByArea.py?type="+type+"&msg="+msg+"&lat="+lat+"&lng="+lng,true);
         xmlhttp.send();
     }
 

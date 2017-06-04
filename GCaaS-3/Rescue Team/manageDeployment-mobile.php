@@ -3,10 +3,10 @@ session_start();
 if(isset($_GET['depName']) /*you can validate the link here*/){
     $_SESSION['depname'] = $_GET['depName'];
 }
-// if (!$_SESSION["username"]) {
-//     header("Location: http://172.20.10.2/GCaaS-3/index.php");
-//     exit(0);
-// }
+if (!$_SESSION["username"]) {
+    header("Location: http://".$_SESSION['host']."/GCaaS-3/index.php");
+    exit(0);
+}
 ?>
 
 <!DOCTYPE html>
@@ -142,13 +142,18 @@ if(isset($_GET['depName']) /*you can validate the link here*/){
 </nav>
 
 <?php
-    $connection = pg_connect("host=172.20.10.2 port=5432 dbname=GCaaS user=postgres password=1234");
-    if (!$connection) {
-        echo "Connection Failed.";
-        exit;
+    // $connection = pg_connect("host=172.20.10.2 port=5432 dbname=GCaaS user=postgres password=1234");
+    // if (!$connection) {
+    //     echo "Connection Failed.";
+    //     exit;
+    // }
+    require('../connectDB.php');
+    if (! $_SESSION['connection']) {
+    	echo "Connection Failed.";
+    	exit;
     }
     else {
-        $result_user = pg_exec($connection, "SELECT \"user_Fname\", \"user_Lname\", \"user_Email\", \"user_Tel\", \"user_Addr\" FROM table_user WHERE \"user_Username\" = 'n'");
+        $result_user = pg_exec($_SESSION['connection'], "SELECT \"user_Fname\", \"user_Lname\", \"user_Email\", \"user_Tel\", \"user_Addr\" FROM table_user WHERE \"user_Username\" = '".$_SESSION["username"]."'");
         $rows_user = pg_numrows($result_user);
         $column_user = pg_numfields($result_user);
         $user_Fname = "";
@@ -186,13 +191,13 @@ if(isset($_GET['depName']) /*you can validate the link here*/){
 
 <!-- First Container -->
 <?php
-    $connection = pg_connect("host=172.20.10.2 port=5432 dbname=GCaaS user=postgres password=1234");
-    if (!$connection) {
-        echo "Connection Failed.";
-        exit;
+    require('../connectDB.php');
+    if (! $_SESSION['connection']) {
+    	echo "Connection Failed.";
+    	exit;
     }
     else {
-        $result_deployment = pg_exec($connection, "SELECT \"deployment_Name\", \"deployment_Description\", \"deployment_DateCreate\", \"deployment_LastAccess\", \"deployment_URL\", ST_AsText(\"deployment_Area\"), \"typeID\", ST_X(ST_AsText(ST_Centroid(\"deployment_Area\"))),ST_Y(ST_AsText(ST_Centroid(\"deployment_Area\"))) FROM table_deployment WHERE \"deployment_Name\" = '" .$_SESSION["depname"]."'");
+        $result_deployment = pg_exec($_SESSION['connection'], "SELECT \"deployment_Name\", \"deployment_Description\", \"deployment_DateCreate\", \"deployment_LastAccess\", \"deployment_URL\", ST_AsText(\"deployment_Area\"), \"typeID\", ST_X(ST_AsText(ST_Centroid(\"deployment_Area\"))),ST_Y(ST_AsText(ST_Centroid(\"deployment_Area\"))) FROM table_deployment WHERE \"deployment_Name\" = '" .$_SESSION["depname"]."'");
         $rows_deployment = pg_numrows($result_deployment);
         $column_deployment = pg_numfields($result_deployment);
         $deployment_Name = "";
@@ -234,7 +239,7 @@ if(isset($_GET['depName']) /*you can validate the link here*/){
 
                     else if ($j == 6) {
                         $typeID = pg_result($result_deployment, $i, $j);
-                        $x = pg_exec($connection, "SELECT \"type_Name\" FROM table_type  WHERE \"typeID\" = " . $typeID);
+                        $x = pg_exec($_SESSION['connection'], "SELECT \"type_Name\" FROM table_type  WHERE \"typeID\" = " . $typeID);
                         $xrow = pg_numrows($x);
                         for ($a = 0; $a < $xrow; $a++) {
                             $type_Name = pg_result($x, $a, 0);
@@ -312,19 +317,19 @@ if(isset($_GET['depName']) /*you can validate the link here*/){
         <li><a href="#">Member</a>
           <ul>
             <?php
-              $connection = pg_connect("host=172.20.10.2 port=5432 dbname=GCaaS user=postgres password=1234");
-              if (!$connection) {
-                  echo "Connection Failed.";
-                  exit;
+              require('../connectDB.php');
+              if (! $_SESSION['connection']) {
+                echo "Connection Failed.";
+                exit;
               }
               else {
-                $result_deploymentID = pg_exec($connection, "SELECT \"deploymentID\" FROM table_deployment  WHERE \"deployment_Name\" = 'test4'");
+                $result_deploymentID = pg_exec($_SESSION['connection'], "SELECT \"deploymentID\" FROM table_deployment  WHERE \"deployment_Name\" = '".$_SESSION['depname']."'");
                 $rows_deploy = pg_numrows($result_deploymentID);
                 $deploymentID = "";
                 if($rows_deploy != 0) {
                     $deploymentID = pg_result($result_deploymentID,0,0);
                 }
-                $result_userDeploy = pg_exec($connection, "SELECT \"userID\", \"roleUserID\" FROM table_worker WHERE \"deploymentID\" = '" . $deploymentID ."'");
+                $result_userDeploy = pg_exec($_SESSION['connection'], "SELECT \"userID\", \"roleUserID\" FROM table_worker WHERE \"deploymentID\" = '" . $deploymentID ."'");
                 $rows_count = pg_numrows($result_userDeploy);
                 $column_count = pg_numfields($result_userDeploy);
                 if ($rows_count != 0) {
@@ -332,7 +337,7 @@ if(isset($_GET['depName']) /*you can validate the link here*/){
                         for ($j = 0; $j < $column_count; $j++) {
                             if ($j == 0) {
                                 $userID = pg_result($result_userDeploy, $i, $j);
-                                $x = pg_exec($connection, "SELECT \"user_Username\" FROM table_user  WHERE \"userID\" = " . $userID);
+                                $x = pg_exec($_SESSION['connection'], "SELECT \"user_Username\" FROM table_user  WHERE \"userID\" = " . $userID);
                                 $xrow = pg_numrows($x);
                                 $username = pg_result($x, 0, 0);
                                 ?><li><a class="disabled">

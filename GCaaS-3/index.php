@@ -13,7 +13,7 @@ if (isset($_POST['signin'])) {
         $message = "Invalid Username or Password!";
     } else {
         // $myresult = pg_exec($connection, "SELECT * FROM table_user, table_role WHERE table_user.\"roleUserID\" = table_role.\"roleID\" AND table_user.\"user_Username\" = '" . $_POST["lg_username"] . "' AND table_user.\"user_Password\" = md5('" . $_POST["lg_password"]."')");
-        $myresult = pg_exec($connection, "SELECT * FROM table_user WHERE \"user_Username\" = '" . $_POST["lg_username"] . "' AND \"user_Password\" = md5('" . $_POST["lg_password"] . "')");
+        $myresult = pg_exec($_SESSION['connection'], "SELECT * FROM table_user WHERE \"user_Username\" = '" . $_POST["lg_username"] . "' AND \"user_Password\" = md5('" . $_POST["lg_password"] . "')");
         $field_count = pg_numfields($myresult);
         $rows = pg_numrows($myresult);
         if ($rows != 0) {
@@ -30,7 +30,7 @@ if (isset($_POST['signin'])) {
                     }
                 }
             }
-            $myresult = pg_exec($connection, "SELECT \"role_Name\" FROM table_role WHERE \"roleID\" = " . $role );
+            $myresult = pg_exec($_SESSION['connection'], "SELECT \"role_Name\" FROM table_role WHERE \"roleID\" = " . $role );
             $field_count = pg_numfields($myresult);
             $rows = pg_numrows($myresult);
             for ($i = 0; $i < $rows; $i++) {
@@ -221,7 +221,7 @@ if (isset($_POST['signin'])) {
 
     </div>
     <!--/.HEADER LINE END-->
-cccccccccccccccccccccccccccccccccccccccccccc
+
     <div class="row text-center">
         <div class="col-lg-4  col-md-4 col-sm-4" data-scroll-reveal="enter from the bottom after 0.4s">
             <div class="about-div">
@@ -609,7 +609,7 @@ cccccccccccccccccccccccccccccccccccccccccccc
                   }
               }
           }
-          xmlhttp.open("GET","../../cgi-bin/register.py?username="+username+"&password="+password+"&fname="+fname+"&lname="+lname+"&addr="+addr+"&email="+email+"&tel="+tel,true);
+          xmlhttp.open("GET","../../GCaaS-3/Python/register.py?username="+username+"&password="+password+"&fname="+fname+"&lname="+lname+"&addr="+addr+"&email="+email+"&tel="+tel,true);
           xmlhttp.send();
       }
 

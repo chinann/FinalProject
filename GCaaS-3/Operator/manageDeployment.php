@@ -107,18 +107,18 @@ if (!$_SESSION["username"]) {
 <!--NAVBAR SECTION-->
 
 <?php
-    // $connection = pg_connect("host=172.16.150.177 port=5432 dbname=GCaaS user=postgres password=1234");
+    // $connection = pg_connect("host=localhost port=5432 dbname=GCaaS user=postgres password=1234");
     // if (!$connection) {
     //     echo "Connection Failed.";
     //     exit;
     // }
-    require('../connectDB.php');     
+    require('../connectDB.php');
     if (! $_SESSION['connection']) {
     	echo "Connection Failed.";
     	exit;
     }
     else {
-        $result_deployment = pg_exec($connection, "SELECT \"deployment_Name\", \"deployment_Description\", \"deployment_DateCreate\", \"deployment_LastAccess\", \"deployment_URL\", ST_AsText(\"deployment_Area\"), \"typeID\", ST_X(ST_AsText(ST_Centroid(\"deployment_Area\"))),ST_Y(ST_AsText(ST_Centroid(\"deployment_Area\"))) FROM table_deployment WHERE \"deployment_Name\" = '" .$_SESSION["depname"]."'");
+        $result_deployment = pg_exec($_SESSION['connection'], "SELECT \"deployment_Name\", \"deployment_Description\", \"deployment_DateCreate\", \"deployment_LastAccess\", \"deployment_URL\", ST_AsText(\"deployment_Area\"), \"typeID\", ST_X(ST_AsText(ST_Centroid(\"deployment_Area\"))),ST_Y(ST_AsText(ST_Centroid(\"deployment_Area\"))) FROM table_deployment WHERE \"deployment_Name\" = '" .$_SESSION["depname"]."'");
         $rows_deployment = pg_numrows($result_deployment);
         $column_deployment = pg_numfields($result_deployment);
         $deployment_Name = "";
@@ -160,7 +160,7 @@ if (!$_SESSION["username"]) {
 
                     else if ($j == 6) {
                         $typeID = pg_result($result_deployment, $i, $j);
-                        $x = pg_exec($connection, "SELECT \"type_Name\" FROM table_type  WHERE \"typeID\" = " . $typeID);
+                        $x = pg_exec($_SESSION['connection'], "SELECT \"type_Name\" FROM table_type  WHERE \"typeID\" = " . $typeID);
                         $xrow = pg_numrows($x);
                         for ($a = 0; $a < $xrow; $a++) {
                             $type_Name = pg_result($x, $a, 0);
@@ -200,63 +200,103 @@ if (!$_SESSION["username"]) {
 
 
 
-<div class="panel-group" id="list-body" style="padding: 0px 50px 0px 50px;">
+    <div class="panel-group" id="list-body" style="padding: 0px 50px 0px 50px;">
 
-    <!-- Static data layer-->
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h3>
-                <a data-toggle="collapse" data-parent="#accordion" href="#static">
+        <!-- Static data layer-->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3>
+                    <a data-toggle="collapse" data-parent="#accordion" href="#static">
                     <i class="fa fa-chevron-circle-down" aria-hidden="true"></i> Manage Static data layer</a>
-            </h3>
-        </div>
+                </h3>
+            </div>
 
-       
-        <div id="static" class="panel-collapse collapse in">
-            <div class="panel-body">
+
+    <div id="static" class="panel-collapse collapse in">
+        <div class="panel-body">
+            <div class="form-group">
+                <label for="area" class="col-sm-3 control-label">Update static data layer: </label>
+                <div class="col-sm-12">
+                    <form class="form-horizontal" role="form">
+                        <div class="panel panel-default" style="color: #333333">
+                            <div class="panel-body">            
+                                    <form>
+                                        <label for="sel1">Select data layer to update (select one):</label>
+                                        <select class="form-control" id="selectElementId">
+                                            <option value="Hospital">Hospitals</option>
+                                            <option value="School">Schools</option>
+                                            <option value="Police station">Police stations</option>
+                                            <option value="Fire station">Fire stations</option>
+                                            <option value="Temple">Temples</option>
+                                            <option value="Province Thailand">Province Thailand</option>
+
+                                            <?php
+                                                require('../connectDB.php');
+                                                $result_staticID_array = array();
+                                                $result_staticDataLayer_Name_array = array();
+                                                if (! $_SESSION['connection']) {
+                                                    echo "Connection Failed.";
+                                                    exit;
+                                                }
+                                                else {
+                                                    $result_staticID = pg_exec($_SESSION['connection'], "SELECT \"staticID\", \"staticDataLayer_Name\" FROM \"table_staticDataLayer\"  WHERE \"deployment_Name\" = '".$_SESSION['depname']."'" );
+                                                    $rows_deploy = pg_numrows($result_staticID);
+                                                    $column_deploy = pg_numfields($result_staticID);
+                                                    if($rows_deploy != 0) {
+                                                        for ($i = 0; $i < $rows_deploy; $i++) {
+                                                            for ($j = 0; $j < $column_deploy; $j++) {
+                                                                if ($j == 0) {
+                                                                    $result_staticID_array[$i] = pg_result($result_staticID,$i,0); 
+                                                                     echo $result_staticID_array[$i] ;
+                                                                }
+                                                                else{
+                                                                    $result_staticDataLayer_Name_array[$i] = pg_result($result_staticID,$i,$j); 
+                                                                    //  echo $result_staticDataLayer_Name_array[$i] ;
+                                                                }                                       
+                                                            } 
+                                                                
+                                                        }
+                                                        for ($i = 0; $i < $rows_deploy; $i++) {
+                                                            // echo $result_staticID_array[$i] ;    
+                                                            echo $result_staticDataLayer_Name_array[$i] ; 
+
+                                                            echo '<option value='.$result_staticDataLayer_Name_array[$i].'>'. $result_staticDataLayer_Name_array[$i].'</option>';
+                                                    
+                                                        }
+                                                    }
+                                                                            
+                                                }
+                                        
+                                            ?>
+
+                                        </select>
+                                    
+                                        <div style="text-align: center; margin: 20px 20px">
+                                            <input id="selectStaticName" type="button" class="btn btn-success" onclick="updateStaticLayer()" value="Update Static data layer" />
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
                 <div class="form-group">
-                    <label for="area" class="col-sm-3 control-label">Static data layer : </label>
+                    <label for="area" class="col-sm-3 control-label">Add Static data layer </label>
                     <div class="col-sm-12">
                         <form class="form-horizontal" role="form">
                             <div class="panel panel-default" style="color: #333333">
                                 <div class="panel-body">
-                                     <div class="col-sm-4">
-                                        <ul >
-                                            <li >
-                                                <a href="#">Province Thailand</a>
-                                            </li>
-                                            <li >
-                                                <a href="#">Hospitals</a>
-                                            </li>
-                                            <li >
-                                                <a href="#">Schools</a>
-                                            </li>
-                                            <li >
-                                                <a href="#">Police stations</a>
-                                            </li>
-                                            <li >
-                                                <a href="#">Fire stations</a>
-                                            </li>
-                                            <li >
-                                                <a href="#">Temples</a>
-                                            </li>
-                                          </ul>
+                                    <div style="text-align: center;margin: 20px 20px">
+                                         <a href="addStatic.php" type="button" class="btn btn-success">Add Static data layer </a>
                                     </div>
                                 </div>
                             </div>
                         </form>
-                        <!--btn go to map website-->
-                        <div style="text-align: center;margin: 20px 20px">
-                            <a href="addStatic.php" type="button" class="btn btn-success">Add Static data layer </a>
-                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div><!--END Static data layer-->
-
-
-
+    </div><!--END Dynamic data layer-->
     <!-- Dynamic data layer-->
     <div class="panel panel-default">
         <div class="panel-heading">
@@ -427,25 +467,25 @@ if (!$_SESSION["username"]) {
                     <tbody>
 
                     <?php
-                    // $connection = pg_connect("host=172.16.150.177 port=5432 dbname=GCaaS user=postgres password=1234");
+                    // $connection = pg_connect("host=localhost port=5432 dbname=GCaaS user=postgres password=1234");
                     // if (!$connection) {
                     //     echo "Connection Failed.";
                     //     exit;
-                    // } 
-                    require('../connectDB.php');     
+                    // }
+                    require('../connectDB.php');
                     if (! $_SESSION['connection']) {
                         echo "Connection Failed.";
                         exit;
                     }
                     else {
-                        $result_deploymentID = pg_exec($connection, "SELECT \"deploymentID\" FROM table_deployment  WHERE \"deployment_Name\" = '" .$_SESSION["depname"]."'");
+                        $result_deploymentID = pg_exec($_SESSION['connection'], "SELECT \"deploymentID\" FROM table_deployment  WHERE \"deployment_Name\" = '" .$_SESSION["depname"]."'");
                         $rows_deploy = pg_numrows($result_deploymentID);
                         $column_deploy = pg_numfields($result_deploymentID);
                         $deploymentID = "";
                         if($rows_deploy != 0) {
                             $deploymentID = pg_result($result_deploymentID,0,0);
                         }
-                        $result_userDeploy = pg_exec($connection, "SELECT * FROM table_worker WHERE \"deploymentID\" = '" . $deploymentID ."'");
+                        $result_userDeploy = pg_exec($_SESSION['connection'], "SELECT * FROM table_worker WHERE \"deploymentID\" = '" . $deploymentID ."'");
                         $rows_count = pg_numrows($result_userDeploy);
                         $column_count = pg_numfields($result_userDeploy);
                         $username = "";
@@ -456,7 +496,7 @@ if (!$_SESSION["username"]) {
                                 for ($j = 0; $j < $column_count; $j++) {
                                     if ($j == 0) {
                                         $userID = pg_result($result_userDeploy, $i, $j);
-                                        $x = pg_exec($connection, "SELECT \"user_Username\" FROM table_user  WHERE \"userID\" = " . $userID);
+                                        $x = pg_exec($_SESSION['connection'], "SELECT \"user_Username\" FROM table_user  WHERE \"userID\" = " . $userID);
                                         $xrow = pg_numrows($x);
                                         for ($a = 0; $a < $xrow; $a++) {
                                             $username = pg_result($x, $a, 0);
@@ -467,7 +507,7 @@ if (!$_SESSION["username"]) {
                                         <?php
                                     } else if ($j == 3) {
                                         $roleUserID = pg_result($result_userDeploy, $i, $j);
-                                        $y = pg_exec($connection, "SELECT \"role_Name\"  FROM table_role  WHERE \"roleUserID\" =" . $roleUserID);
+                                        $y = pg_exec($_SESSION['connection'], "SELECT \"role_Name\"  FROM table_role  WHERE \"roleUserID\" =" . $roleUserID);
                                         $yrow = pg_numrows($y);
                                         for ($b = 0; $b < $yrow; $b++) {
                                             $roleName = pg_result($y, $b, 0);
@@ -576,6 +616,7 @@ if (!$_SESSION["username"]) {
                     polygonArea.setMap(map);
                 }
 
+
                 function pullUser(){
                     if (document.getElementById("add-user").value != "") {
                         var user = document.getElementById("add-user").value;
@@ -601,7 +642,7 @@ if (!$_SESSION["username"]) {
                                 }
                             }
                         }
-                        xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/cgi-bin/searchUser.py?user="+user,true);
+                        xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/GCaaS-3/Python/searchUser.py?user="+user,true);
                         xmlhttp.send();
                     }
                     else {
@@ -637,7 +678,7 @@ if (!$_SESSION["username"]) {
                                 document.getElementById("role").hidden = true;
                             }
                         }
-                        xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/cgi-bin/addUser.py?user="+username+"&role="+role,true);
+                        xmlhttp.open("GET","http://" +"<?php echo $_SESSION['host'] ?>" +"/GCaaS-3/Python/addUser.py?user="+username+"&role="+role,true);
                         xmlhttp.send();
                     }
                     else {
@@ -673,6 +714,45 @@ if (!$_SESSION["username"]) {
 <script src="../js/bootstrap.js"></script>
 
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD-a-v-TmBvYfQRkceXy4d8L6cd78ip73s&callback=initialize"></script>
+<script>
+    var selectedStaticlayer;
+    // var min = 12,
+    //     max = 20,
+    //     select = document.getElementById('selectElementId');
+
+    //     for (var i = min; i<=max; i++){
+    //         var opt = document.createElement('option');
+    //         opt.value = i;
+    //         opt.innerHTML = i;
+    //         select.appendChild(opt);
+    //     }
+
+    $(document).ready(function(){
+        $("select.form-control").change(function(){
+            selectedStaticlayer = $(".form-control option:selected").val();
+            alert("You have selected the country - " + selectedStaticlayer);
+        });
+    });
+
+  
+
+   function updateStaticLayer(){
+      
+        $.ajax({
+            type: "POST",
+            data: selectedStaticlayer,
+            success: function(r)    {
+                
+                sessionStorage.selectedStaticlayer =  document.getElementById("selectElementId").value
+                window.location.href  = 'updateStatic.php';
+                
+              
+            }
+        });
+    }
+
+
+</script>
 
 </body>
 </html>
